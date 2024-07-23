@@ -66,16 +66,18 @@ done
 
 for ((i=0; i<=${#services[@]}; i++)) do
      if ((i >= (${#services[@]} / 2))); then
-          ticket_description+=("${env} ROLLBACK Deploy ${services[i]} for ${app} $app_version")
           if [ "${services[i],,}" = "deployment" ]; then
                    ticket_description+=("${env} ROLLBACK Deploy for ${app} $app_version")
+          else
+               ticket_description+=("${env} ROLLBACK Deploy ${services[i]} for ${app} $app_version")
           fi
-
      else
-          ticket_description+=("${env} Deploy ${services[i]} for ${app} $app_version")
+
           if [ "${services[i],,}" = "deployment" ]; then
-                             ticket_description+=("${env} Deploy for ${app} $app_version")
-                    fi
+               ticket_description+=("${env} Deploy for ${app} $app_version")
+          else
+               ticket_description+=("${env} Deploy ${services[i]} for ${app} $app_version")
+          fi
      fi
 done
 
@@ -88,9 +90,8 @@ next_step="${bold} <---- current step ★${normal}"
 description=("${child_tickets[0]}")
 
 
-for ((j=1; j<${#child_tickets[@]}; j++))
- do
-  description+=("\n${child_tickets[j]}")
+for ((j=1; j<${#child_tickets[@]}; j++)) ; do
+     description+=("\n${child_tickets[j]}")
 done
 
 
@@ -124,7 +125,7 @@ for ((i=1; i<${#child_tickets[@]}; i++))
  do
   if ((i > 0)) &&  [[ ${description[i-1]} == *"${next_step}"* ]]
   then
-    description[i-1]=$(echo "${description[i-1]}" | sed "s/${next_step}//g")
+     description[i-1]=$(echo "${description[i-1]}" | sed "s/${next_step}//g")
   fi
   description[i]+=${next_step}
 
