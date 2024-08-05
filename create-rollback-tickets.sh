@@ -3,7 +3,17 @@
 rollback=$1
 rollback_tickets=$2
 
-if [ rollback = true ]; then
+cleaned_rollback_tickets=()
+# This loop will remove all the un wanted characters from the services array
+for ticket in "${rollback_tickets[@]}"; do
+  cleaned_rollback_ticket="${ticket//[\[\],]/}"
+  cleaned_rollback_tickets+=("$cleaned_rollback_ticket")
+done
+
+# Overwrites the original service array with the cleaned version of service array
+rollback_tickets=("${cleaned_rollback_tickets[@]}")
+
+if [ "$rollback" = true ]; then
      rollback_ticket_summaries=()
      for ticket in "${rollback_tickets[@]}"; do
 
