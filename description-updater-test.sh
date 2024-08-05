@@ -13,8 +13,6 @@ env=$2
 app=$3
 app_version=$4
 release_type=$5
-rollback=$6
-rollback_tickets=("${@:7}")
 services=("${@:8}")
 
 
