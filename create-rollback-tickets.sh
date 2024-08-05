@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rollback_tickets=("${@:1}")
+rollback_tickets=("$@")
 echo "Rollback Tickets before cleaning: ${rollback_tickets[*]}"
 
 cleaned_rollback_tickets=()
