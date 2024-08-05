@@ -1,7 +1,6 @@
 #!/bin/bash
 
-rollback=$1
-rollback_tickets=("${@:2}")
+rollback_tickets=("${@:1}")
 
 cleaned_rollback_tickets=()
 # This loop will remove all the un wanted characters from the services array
@@ -12,7 +11,7 @@ done
 
 # Overwrites the original service array with the cleaned version of service array
 rollback_tickets=("${cleaned_rollback_tickets[@]}")
-
+echo "Rollback Tickets: ${rollback_tickets[*]}"
 
 rollback_ticket_summaries=()
 for ticket in "${rollback_tickets[@]}"; do
