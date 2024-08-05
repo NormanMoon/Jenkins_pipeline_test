@@ -17,7 +17,7 @@ rollback_tickets=("${cleaned_rollback_tickets[@]}")
 rollback_ticket_summaries=()
 for ticket in "${rollback_tickets[@]}"; do
 
-     ticket_summary=("$(curl -s "https://jira.atlassian.com/rest/api/2/issue/${ticket}" | grep -Po '"summary":.*?[^\\]"')")
+     ticket_summary=("$(curl -s "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | grep -Po '"summary":.*?[^\\]"')")
      rollback_ticket_summaries+=("${ticket_summary[*]}")
 
 done
