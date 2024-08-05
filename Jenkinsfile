@@ -22,7 +22,7 @@ pipeline {
                }
           }
           stage('Creating Parent Ticket') {
-               when { expression {!return.params.ROLLBACK} }
+               when { expression {return.params.ROLLBACK = false} }
                steps {
                     script{
                          sh "bash create-parent-ticket-test.sh ${TOKEN}"
@@ -30,7 +30,7 @@ pipeline {
                }
           }
           stage('Creating Child Ticket') {
-               when { expression {!return.params.ROLLBACK} }
+               when { expression {!return.params.ROLLBACK = false} }
                steps {
                     script{
                          sh "bash create-child-ticket-test.sh ${TOKEN} ${services} ${rollback} ${rollback_tickets}"
@@ -38,7 +38,7 @@ pipeline {
                }
           }
           stage('Updating Tickets') {
-               when { expression {!return.params.ROLLBACK} }
+               when { expression {!return.params.ROLLBACK= false} }
                steps {
                     script{
                          sh "bash description-updater-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${rollback} ${rollback_tickets} ${services}"
@@ -46,7 +46,7 @@ pipeline {
                }
           }
           stage('Rollback Tickets') {
-               when { expression {!return.params.ROLLBACK} }
+               when { expression {return.params.ROLLBACK} }
                steps {
                     script {
                          sh "bash create-rollback-tickets.sh ${rollback} ${rollback_tickets}"
