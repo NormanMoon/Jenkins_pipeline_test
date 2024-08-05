@@ -13,14 +13,14 @@ done
 # Overwrites the original service array with the cleaned version of service array
 rollback_tickets=("${cleaned_rollback_tickets[@]}")
 
-if [ "$rollback" = true ]; then
-     rollback_ticket_summaries=()
-     for ticket in "${rollback_tickets[@]}"; do
 
-          rollback_ticket_summaries+=("$(curl -s "https://jira.atlassian.com/rest/api/2/issue/${ticket}" | grep -Po '"summary":.*?[^\\]"')")
+rollback_ticket_summaries=()
+for ticket in "${rollback_tickets[@]}"; do
 
-     done
+     rollback_ticket_summaries+=("$(curl -s "https://jira.atlassian.com/rest/api/2/issue/${ticket}" | grep -Po '"summary":.*?[^\\]"')")
 
-     echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
-fi
+done
+
+echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
+
 
