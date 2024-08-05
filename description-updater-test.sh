@@ -138,15 +138,15 @@ for ((i=1; i<${#child_tickets[@]}; i++))
     "$string_description")
 
 
-    curl -v -i -X PUT \
-      -u norman.moon@aboutobjects.com:$token \
-      -H "Content-Type:application/json" \
-      -H "Accept: application/json" \
-      -H "X-Atlassian-Token:no-check" \
-      "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" \
-      -d \
-      "$json_final" \
-      -o update-task-test.out
+     curl -v -i -X PUT \
+          -u norman.moon@aboutobjects.com:$token \
+          -H "Content-Type:application/json" \
+          -H "Accept: application/json" \
+          -H "X-Atlassian-Token:no-check" \
+          "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" \
+          -d \
+          "$json_final" \
+          -o update-task-test.out
 
 done
 

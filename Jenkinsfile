@@ -49,7 +49,7 @@ pipeline {
                when { expression {return params.ROLLBACK} }
                steps {
                     script {
-                         sh "bash create-rollback-tickets.sh ${rollback_tickets}"
+                         sh "bash create-rollback-tickets.sh ${TOKEN} ${rollback_tickets}"
                     }
                }
           }
