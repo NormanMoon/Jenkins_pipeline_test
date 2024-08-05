@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rollback=$1
-rollback_tickets=$2
+rollback_tickets=("${@:2}")
 
 cleaned_rollback_tickets=()
 # This loop will remove all the un wanted characters from the services array
