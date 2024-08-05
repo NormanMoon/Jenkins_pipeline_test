@@ -13,7 +13,10 @@ env=$2
 app=$3
 app_version=$4
 release_type=$5
-services=("${@:6}")
+rollback=$6
+rollback_tickets=("${@:7}")
+services=("${@:8}")
+
 
 
 #This will remove the ',' from the release_type and
@@ -33,7 +36,6 @@ for service in "${services[@]}"; do
 done
 # Overwrites the original service array with the cleaned version of service array
 services=("${cleaned_services[@]}")
-services+=("${services[@]}") # this doubles the amount of services, 1/2 for deployment, other 1/2 for rollback
 
 # Initialize an empty array for tickets
 tickets=()
@@ -65,20 +67,13 @@ for ((i=parent_ticket_num+1; i<=last_child_ticket_num; i++)) do
 done
 
 for ((i=0; i<=${#services[@]}; i++)) do
-     if ((i >= (${#services[@]} / 2))); then
-          if [ "${services[i],,}" = "deployment" ]; then
-                   ticket_description+=("${env} ROLLBACK Deploy for ${app} $app_version")
-          else
-               ticket_description+=("${env} ROLLBACK Deploy ${services[i]} for ${app} $app_version")
-          fi
-     else
 
-          if [ "${services[i],,}" = "deployment" ]; then
-               ticket_description+=("${env} Deploy for ${app} $app_version")
-          else
-               ticket_description+=("${env} Deploy ${services[i]} for ${app} $app_version")
-          fi
+     if [ "${services[i],,}" = "deployment" ]; then
+          ticket_description+=("${env} Deploy for ${app} $app_version")
+     else
+          ticket_description+=("${env} Deploy ${services[i]} for ${app} $app_version")
      fi
+
 done
 
 echo "child_tickets ${child_tickets[*]}"
