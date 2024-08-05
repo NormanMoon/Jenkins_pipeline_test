@@ -16,16 +16,15 @@ rollback_tickets=("${cleaned_rollback_tickets[@]}")
 echo "Rollback Tickets after cleaning: ${rollback_tickets[*]}"
 
 rollback_ticket_summaries=()
-for ticket in "${rollback_tickets[@]}"; do
 
-     ticket_summary=$(curl -s GET \
-                              -u norman.moon@aboutobjects.com:"$token" \
-                              "https://normanmoon.atlassian.net/rest/api/2/issue/COMP-241" | \
-                                                                                             json_pp | \
-                                                                                             grep summary)
-     rollback_ticket_summaries+=("${ticket_summary[*]}")
+ticket_summary=$(curl -s GET \
+     -u norman.moon@aboutobjects.com:"${rollback_tickets[0]}" \
+     "https://normanmoon.atlassian.net/rest/api/2/issue/COMP-241" | \
+                                                                    json_pp | \
+                                                                    grep summary)
+rollback_ticket_summaries+=("${ticket_summary[*]}")
 
-done
+
 
 echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
 
