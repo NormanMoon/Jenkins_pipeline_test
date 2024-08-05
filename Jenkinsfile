@@ -11,7 +11,7 @@ pipeline {
                     script {
                          // Formats the parameters
                          rollback=params.ROLLBACK
-                         rollback_tickets=params.TICKETS
+                         rollback_tickets=params.TICKETS.split()
                          env=params.ENV
                          services=params.SERVICES.split()
                          sh "echo ${services}"
