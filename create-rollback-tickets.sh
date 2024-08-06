@@ -47,7 +47,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
                                                                                              json_pp | \
                                                                                              grep description | \
-                                                                                             grep -o Sequence)
+                                                                                             grep -w Sequence)
      echo "ticket description for ${ticket}: ${ticket_description}"
 
 
