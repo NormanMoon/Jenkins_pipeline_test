@@ -50,7 +50,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
                                                                                              grep -w Sequence)
 
      cleaned_ticket_description=$(echo "$ticket_description" | sed 's/"description" ://g')
-     cleaned_ticket_description=$(echo "$cleaned_ticket_description" | tr -d '",:')
+     cleaned_ticket_description=$(echo "$cleaned_ticket_description" | tr -d '",')
      echo "ticket description for ${ticket}: ${cleaned_ticket_description}"]
 
      if [[ ${cleaned_ticket_summary,,} == *"deployment"* ]]; then
