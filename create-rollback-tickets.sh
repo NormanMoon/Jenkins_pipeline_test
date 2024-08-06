@@ -30,7 +30,7 @@ for ticket in "${rollback_tickets[@:1]}"; do
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
                                                                                              json_pp | \
                                                                                              grep summary | \
-                                                                                             grep -v Parent )
+                                                                                             awk 'c++ == 1')
      rollback_ticket_summaries+=("${ticket_summary}")
 done
 
