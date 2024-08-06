@@ -29,7 +29,7 @@ ticket_summary=$(curl -s GET \
 echo "issuetype: ${issuetype}"
 cleaned_ticket_summary=$(echo "$ticket_summary" | sed 's/summary//g')
 cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
-rollback_ticket_summaries+=("${ticket_summary}")
+rollback_ticket_summaries+=("${cleaned_ticket_summary}")
 
 for ticket in "${rollback_tickets[@]:1}"; do
 
@@ -48,8 +48,10 @@ for ticket in "${rollback_tickets[@]:1}"; do
                                                                                              json_pp | \
                                                                                              grep description | \
                                                                                              grep -w Sequence)
-     echo "ticket description for ${ticket}: ${ticket_description}"
 
+     cleaned_ticket_description=$(echo "$ticket_description" | sed 's/"description" ://g')
+     cleaned_ticket_description=$(echo "$cleaned_ticket_description" | tr -d '",:')
+     echo "ticket description for ${ticket}: ${cleaned_ticket_description}"]
 
      if [[ ${cleaned_ticket_summary,,} == *"deployment"* ]]; then
           issuetype+=10011
