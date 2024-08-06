@@ -21,7 +21,7 @@ ticket_summary=$(curl GET \
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${rollback_tickets[0]}" | \
                                                                                              json_pp | \
                                                                                              grep summary )
-cleaned_ticket_summary=$(echo "$ticket_summary" | grep -v 'summary')
+cleaned_ticket_summary=$(echo "$ticket_summary" | grep -v summary)
 cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
 rollback_ticket_summaries+=("${ticket_summary}")
 
