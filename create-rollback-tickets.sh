@@ -23,14 +23,14 @@ ticket_summary=$(curl GET \
                                                                                              grep summary )
 rollback_ticket_summaries+=("${ticket_summary}")
 
-for ticket in "${rollback_tickets[@:1]}"; do
+for ticket in "${rollback_tickets[@]:1}"; do
 
      ticket_summary=$(curl GET \
                               -u norman.moon@aboutobjects.com:"$token" \
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
                                                                                              json_pp | \
                                                                                              grep summary | \
-                                                                                             awk 'c++ == 1')
+                                                                                             grep -v Parent )
      rollback_ticket_summaries+=("${ticket_summary}")
 done
 
