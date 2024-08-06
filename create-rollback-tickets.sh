@@ -31,7 +31,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
                                                                                              json_pp | \
                                                                                              grep summary | \
                                                                                              grep -v Parent )
-     cleaned_ticket_summary=$(echo "ticket_summary" | sed 's/summary//g')
+     cleaned_ticket_summary=$(echo "$ticket_summary" | sed 's/summary//g')
      cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
      rollback_ticket_summaries+=("${cleaned_ticket_summary}")
 done
