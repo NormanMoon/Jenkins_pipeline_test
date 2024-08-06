@@ -26,7 +26,7 @@ ticket_summary=$(curl GET \
 
 issuetype=$(curl GET \
                          -u norman.moon@aboutobjects.com:"$token" \
-                         "https://normanmoon.atlassian.net/rest/api/2/issue/${rollback_tickets[0]}" | \
+                         "https://normanmoon.atlassian.net/rest/api/2/issue/${rollback_tickets[1]}" | \
                                                                                       json_pp | \
                                                                                       grep issuetype )
 echo "issuetype: ${issuetype}"
