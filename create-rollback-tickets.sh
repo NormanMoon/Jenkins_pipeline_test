@@ -60,7 +60,8 @@ for ticket in "${rollback_tickets[@]:1}"; do
      IFS=' ' read -r -a cleaned_ticket_summary_array <<< "$cleaned_ticket_summary"
      cleaned_ticket_summary_array=( "${cleaned_ticket_summary_array[@]:0:1}" "ROLLBACK" "${cleaned_ticket_summary_array[@]:1}")
 
-     rollback_ticket_summaries+=("${cleaned_ticket_summary_array[*]}")
+     current_ticket_summary="${cleaned_ticket_summary_array[*]}"
+     rollback_ticket_summaries+=("${current_ticket_summary}")
      ticket_description=$(curl -s GET \
                               -u norman.moon@aboutobjects.com:"$token" \
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
@@ -102,7 +103,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
           }'
 
           json_final=$(printf "$template" \
-                              "${cleaned_ticket_summary_array[*]}" \
+                              "$current_ticket_summary" \
                               "$project_id" \
                               "$current_issuetype" \
                               "$parent_ticket" \
@@ -117,6 +118,40 @@ for ticket in "${rollback_tickets[@]:1}"; do
                  -d \
                  "$json_final" \
                  -o create-child-ticket-test-subtask.out
+     else
+          template='{
+
+                         "fields": {
+                              "summary": "%s",
+                         "project": {
+                              "id": "%s"
+                         },
+                         "issuetype": {
+                            "id": "%s"
+                         },
+                         "parent": {
+                            "key": "%s"
+                         },
+                         "description": "%s"
+                          }
+                    }'
+
+                    json_final=$(printf "$template" \
+                                        "$current_ticket_summary" \
+                                        "$project_id" \
+                                        "$current_issuetype" \
+                                        "$parent_ticket" \
+                                        "$parent_description")
+
+                    curl -v -i -X POST \
+                           -u norman.moon@aboutobjects.com:$token \
+                           -H "Content-Type:application/json" \
+                           -H "Accept: application/json" \
+                           -H "X-Atlassian-Token:no-check" \
+                           "https://normanmoon.atlassian.net/rest/api/2/issue/" \
+                           -d \
+                           "$json_final" \
+                           -o create-child-ticket-test-subtask.out
      fi
 done
 
