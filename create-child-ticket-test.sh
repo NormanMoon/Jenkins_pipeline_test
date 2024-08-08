@@ -13,6 +13,7 @@ cleaned_services=()
 
 for service in "${services[@]}"; do
   cleaned_service="${service//[\[\],]/}"
+  cleaned_services+=("$cleaned_service")
 done
 # Overwrites the original service array with the cleaned version of service array
 services=("${cleaned_services[@]}")
