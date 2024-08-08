@@ -32,7 +32,7 @@ cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
 # Change the summary string into an array and plug in the word ROLLBACK into it
 IFS=' ' read -r -a cleaned_ticket_summary_array <<< "$cleaned_ticket_summary"
 cleaned_ticket_summary_array=( "${cleaned_ticket_summary_array[@]:0:1}" "ROLLBACK" "${cleaned_ticket_summary_array[@]:1}")
-rollback_ticket_summaries+=("${cleaned_ticket_summary}")
+rollback_ticket_summaries+=("${cleaned_ticket_summary_array[*]}")
 
 
 for ticket in "${rollback_tickets[@]:1}"; do
