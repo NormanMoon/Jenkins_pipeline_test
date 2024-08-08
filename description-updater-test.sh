@@ -67,7 +67,7 @@ done
 for ((i=0; i<=${#services[@]}; i++)) do
 
      if [ "${services[i],,}" = "deployment" ]; then
-          ticket_description+=("${env} Deploy for ${app} $app_version")
+          ticket_description+=("${env} Deploy Deployment for ${app} $app_version")
      else
           ticket_description+=("${env} Deploy ${services[i]} for ${app} $app_version")
      fi
