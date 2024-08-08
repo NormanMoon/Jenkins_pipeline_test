@@ -46,10 +46,10 @@ for ticket in "${rollback_tickets[@]:1}"; do
      cleaned_ticket_summary=$(echo "$ticket_summary" | sed 's/summary//g')
      cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
      # Change the summary string into an array and plug in the word ROLLBACK into it
-     IFS=' ' read -r -a array <<< "$cleaned_ticket_summary"
-     $cleaned_ticket_summary[1]+= " ROLLBACK "
+     IFS=' ' read -r -a cleaned_ticket_summary_array <<< "$cleaned_ticket_summary"
+     cleaned_ticket_summary_array=( "${cleaned_ticket_summary_array[@]:0:1}" " ROLLBACK " "${cleaned_ticket_summary_array[@}:1]}")
 
-     rollback_ticket_summaries+=("${cleaned_ticket_summary[*]}")
+     rollback_ticket_summaries+=("${cleaned_ticket_summary_array[*]}")
      ticket_description=$(curl -s GET \
                               -u norman.moon@aboutobjects.com:"$token" \
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
@@ -108,6 +108,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
                  -o create-child-ticket-test-subtask.out
 
 
+     fi
 done
 
 
