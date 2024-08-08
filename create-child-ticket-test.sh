@@ -140,7 +140,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                  "https://normanmoon.atlassian.net/rest/api/2/issue/" \
                  -d \
                  "$json_final" \
-                 -o create-child-ticket-test-bug.out
+                 -o create-child-ticket-test-subtask.out
 
           child_tickets_keys+=("$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out)")
 
