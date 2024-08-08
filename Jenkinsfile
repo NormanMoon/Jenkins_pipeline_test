@@ -33,7 +33,7 @@ pipeline {
                when { expression {!params.ROLLBACK } }
                steps {
                     script{
-                         sh "bash create-child-ticket-test.sh ${TOKEN} ${services} ${rollback} ${rollback_tickets}"
+                         sh "bash create-child-ticket-test.sh ${TOKEN} ${services}"
                     }
                }
           }
