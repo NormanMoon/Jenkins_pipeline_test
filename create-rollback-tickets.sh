@@ -29,11 +29,19 @@ ticket_summary=$(curl -s GET \
 echo "issuetype: ${issuetype}"
 cleaned_ticket_summary=$(echo "$ticket_summary" | sed 's/summary//g')
 cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
-# Change the summary string into an array and plug in the word ROLLBACK into it
-IFS=' ' read -r -a cleaned_ticket_summary_array <<< "$cleaned_ticket_summary"
-cleaned_ticket_summary_array=( "${cleaned_ticket_summary_array[@]:0:1}" "ROLLBACK" "${cleaned_ticket_summary_array[@]:1}")
-rollback_ticket_summaries+=("${cleaned_ticket_summary_array[*]}")
+rollback_ticket_summaries+=("${cleaned_ticket_summary}")
 
+parent_description=$(curl -s GET \
+                         -u norman.moon@aboutobjects.com:"$token" \
+                         "https://normanmoon.atlassian.net/rest/api/2/issue/${rollback_tickets[0]}" | \
+                                                                                        json_pp | \
+                                                                                        grep description | \
+                                                                                        grep -w Sequence)
+
+cleaned_parent_description=$(echo "$parent_description" | sed 's/"description" ://g')
+cleaned_parent_description=$(echo "$cleaned_parent_description" | tr -d '",')
+parent_description=${cleaned_parent_description}
+echo "This is the parent description: ${parent_description}"
 
 for ticket in "${rollback_tickets[@]:1}"; do
 
@@ -62,6 +70,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
 
      cleaned_ticket_description=$(echo "$ticket_description" | sed 's/"description" ://g')
      cleaned_ticket_description=$(echo "$cleaned_ticket_description" | tr -d '",')
+
      echo "ticket description for ${ticket}: ${cleaned_ticket_description}"]
 
      if [[ ${cleaned_ticket_summary,,} == *"deployment"* ]]; then
@@ -75,7 +84,6 @@ for ticket in "${rollback_tickets[@]:1}"; do
 
      if ((current_issuetype==10011)); then
 
-          summary= "child rollback ticket"
           template='{
 
                "fields": {
@@ -94,11 +102,11 @@ for ticket in "${rollback_tickets[@]:1}"; do
           }'
 
           json_final=$(printf "$template" \
-                              "$summary" \
+                              "${cleaned_ticket_summary_array[*]}" \
                               "$project_id" \
-                              "$temp_issuetype" \
-                              "$parent" \
-                              "$temp_description")
+                              "$current_issuetype" \
+                              "$parent_ticket" \
+                              "$parent_description")
 
           curl -v -i -X POST \
                  -u norman.moon@aboutobjects.com:$token \
@@ -109,12 +117,10 @@ for ticket in "${rollback_tickets[@]:1}"; do
                  -d \
                  "$json_final" \
                  -o create-child-ticket-test-subtask.out
-
-
      fi
 done
 
-
+echo "This is the last ticket made: $(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out | sed 's/COMP-//')"
 
 
 echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
