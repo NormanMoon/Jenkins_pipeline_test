@@ -31,17 +31,25 @@ cleaned_ticket_summary=$(echo "$ticket_summary" | sed 's/summary//g')
 cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
 rollback_ticket_summaries+=("${cleaned_ticket_summary}")
 
+
 for ticket in "${rollback_tickets[@]:1}"; do
 
+     current_issuetype=0
      ticket_summary=$(curl -s GET \
                               -u norman.moon@aboutobjects.com:"$token" \
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
                                                                                              json_pp | \
                                                                                              grep summary | \
                                                                                              grep -v Parent )
+
+
      cleaned_ticket_summary=$(echo "$ticket_summary" | sed 's/summary//g')
      cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
-     rollback_ticket_summaries+=("${cleaned_ticket_summary}")
+     # Change the summary string into an array and plug in the word ROLLBACK into it
+     IFS=' ' read -r -a array <<< "$cleaned_ticket_summary"
+     $cleaned_ticket_summary[1]+= " ROLLBACK "
+
+     rollback_ticket_summaries+=("${cleaned_ticket_summary[*]}")
      ticket_description=$(curl -s GET \
                               -u norman.moon@aboutobjects.com:"$token" \
                               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
@@ -54,10 +62,52 @@ for ticket in "${rollback_tickets[@]:1}"; do
      echo "ticket description for ${ticket}: ${cleaned_ticket_description}"]
 
      if [[ ${cleaned_ticket_summary,,} == *"deployment"* ]]; then
-          issuetype+=10011
+          current_issuetype=10011
+          issuetype+=current_issuetype
+
      else
-          issuetype+=10008
+          current_issuetype=10008
+          issuetype+=current_issuetype
      fi
+
+     if ((current_issuetype==10011)); then
+
+          summary= "child rollback ticket"
+          template='{
+
+               "fields": {
+                    "summary": "%s",
+               "project": {
+                    "id": "%s"
+               },
+               "issuetype": {
+                  "id": "%s"
+               },
+               "parent": {
+                  "key": "%s"
+               },
+               "description": "%s"
+                }
+          }'
+
+          json_final=$(printf "$template" \
+                              "$summary" \
+                              "$project_id" \
+                              "$temp_issuetype" \
+                              "$parent" \
+                              "$temp_description")
+
+          curl -v -i -X POST \
+                 -u norman.moon@aboutobjects.com:$token \
+                 -H "Content-Type:application/json" \
+                 -H "Accept: application/json" \
+                 -H "X-Atlassian-Token:no-check" \
+                 "https://normanmoon.atlassian.net/rest/api/2/issue/" \
+                 -d \
+                 "$json_final" \
+                 -o create-child-ticket-test-subtask.out
+
+
 done
 
 
