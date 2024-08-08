@@ -41,7 +41,7 @@ pipeline {
                when { expression {!params.ROLLBACK } }
                steps {
                     script{
-                         sh "bash description-updater-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${rollback} ${rollback_tickets} ${services}"
+                         sh "bash description-updater-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${services}"
                     }
                }
           }

@@ -13,7 +13,7 @@ env=$2
 app=$3
 app_version=$4
 release_type=$5
-services=("${@:8}")
+services=("${@:6}")
 
 
 
