@@ -74,6 +74,8 @@ for ticket in "${rollback_tickets[@]:1}"; do
 
      echo "ticket description for ${ticket}: ${cleaned_ticket_description}"]
 
+     echo "The current ticket summary: ${cleaned_ticket_summary}"
+
      if [[ ${cleaned_ticket_summary,,} == *"deployment"* ]]; then
           current_issuetype=10011
           issuetype+=current_issuetype
@@ -82,7 +84,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
           current_issuetype=10008
           issuetype+=current_issuetype
      fi
-
+     echo "The current ticket issuetype: ${current_issuetype}"
      if ((current_issuetype==10011)); then
 
           template='{
@@ -109,7 +111,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
                               "$parent_ticket" \
                               "$parent_description")
 
-          curl -v -i -X POST \
+          curl -v -s -i -X POST \
                  -u norman.moon@aboutobjects.com:$token \
                  -H "Content-Type:application/json" \
                  -H "Accept: application/json" \
@@ -143,7 +145,7 @@ for ticket in "${rollback_tickets[@]:1}"; do
                                         "$parent_ticket" \
                                         "$parent_description")
 
-                    curl -v -i -X POST \
+                    curl -v -s -i -X POST \
                            -u norman.moon@aboutobjects.com:$token \
                            -H "Content-Type:application/json" \
                            -H "Accept: application/json" \
