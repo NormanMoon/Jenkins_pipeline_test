@@ -10,11 +10,12 @@ issuetype_id=()
 cleaned_services=()
 # This loop will remove all the un wanted characters from the services array
 
-
+echo "services at top of script: ${services[*]}"
 for service in "${services[@]}"; do
   cleaned_service="${service//[\[\],]/}"
   cleaned_services+=("$cleaned_service")
 done
+echo "cleaned services at top of script: ${cleaned_services[*]}"
 # Overwrites the original service array with the cleaned version of service array
 services=("${cleaned_services[@]}")
 
