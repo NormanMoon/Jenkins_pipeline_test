@@ -142,7 +142,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                  "$json_final" \
                  -o create-child-ticket-test-bug.out
 
-          child_tickets_keys+=("$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-bug.out)")
+          child_tickets_keys+=("$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out)")
 
 
      fi
