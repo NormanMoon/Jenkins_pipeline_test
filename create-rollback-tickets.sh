@@ -173,6 +173,8 @@ for ((i = ${number_of_rollback_tickets[@]}; i >= 0; i -- )); do
      parent_description+="\n${current_rollback_ticket}"
 done
 
+temp_parent_description="${parent_description[*]}"
+
 template='{
     "fields" : {
       "description" : "%s"
@@ -180,7 +182,7 @@ template='{
   }'
 
 json_final=$(printf "$template" \
-     "$parent_description")
+     "$temp_parent_description")
 
 curl -v -i -X PUT \
   -u norman.moon@aboutobjects.com:$token \
