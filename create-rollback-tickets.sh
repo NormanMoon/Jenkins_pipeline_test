@@ -43,6 +43,9 @@ cleaned_parent_description=$(echo "$cleaned_parent_description" | tr -d '",')
 parent_description=${cleaned_parent_description}
 echo "This is the parent description: ${parent_description}"
 
+# This is the number of rollback tickets being made. Its used for updating the ticket descriptions
+number_of_rollback_tickets=${rollback_tickets[*]}
+
 for ticket in "${rollback_tickets[@]:1}"; do
 
      current_issuetype=0
@@ -157,9 +160,40 @@ for ticket in "${rollback_tickets[@]:1}"; do
      fi
 done
 
-echo "This is the last ticket made: $(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out | sed 's/COMP-//')"
+latest_rollback_ticket_number="$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out | sed 's/COMP-//')"
 
 
 echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
+
+# This is the updating the descriptions for the new rollback tickets
+for ((i = ${number_of_rollback_tickets}; i >= 0; i -- )); do
+     current_rollback_ticket_number=${latest_rollback_ticket_number}-i
+     current_rollback_ticket="COMP-${current_rollback_ticket_number}"
+     parent_description+="\n${current_rollback_ticket}"
+done
+
+template='{
+    "fields" : {
+      "description" : "%s"
+    }
+  }'
+
+json_final=$(printf "$template" \
+     "$parent_description")
+
+curl -v -i -X PUT \
+  -u norman.moon@aboutobjects.com:$token \
+  -H "Content-Type:application/json" \
+  -H "Accept: application/json" \
+  -H "X-Atlassian-Token:no-check" \
+  "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_ticket}" \
+  -d \
+  "$json_final" \
+  -o update-task-test.out
+
+
+#for ticket in "${rollback_tickets[@]:1}"; do
+
+
 
 

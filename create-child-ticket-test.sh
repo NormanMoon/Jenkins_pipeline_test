@@ -49,7 +49,7 @@ echo "children types ${child_tickets[*]}"
 description=("${child_tickets[0]}")
 
 for ((j=1; j<${#child_tickets[@]}; j++)) do
-     echo "=============================${child_tickets[j]}============================="
+
 
     description+=("${child_tickets[j]}")
 
@@ -59,7 +59,7 @@ done
 child_tickets_keys=()
 
 for ((j=0; j<${#issuetype_id[@]}; j++)) do
-     echo "=============================${#child_tickets[@]}============================="
+
 
      if ((issuetype_id[j]==10008))  #Task
      then
