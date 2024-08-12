@@ -201,7 +201,7 @@ next_step="${bold} <---- current step ★${normal}"
 
 # Making a list of all the tickets
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
-IFS=$'\n' read -r -t parent_description_array <<< "$temp_parent_description"
+IFS=$'\n' readarray -t parent_description_array <<< "$temp_parent_description"
 
 children_tickets=()
 for ((i=0; i<${#parent_description_array[@]}; i++)) {
