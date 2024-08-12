@@ -200,7 +200,7 @@ curl -v -i -X PUT \
 next_step="${bold} <---- current step ★${normal}"
 
 # Making a list of all the tickets
-echo "These are the tickets that I'm going to update the descriptions of: ${rollback_tickets[@]:2}"
+echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
 # This is to update the tickets descriptions of the child tickets and newly made rollback tickets
 #for ticket in "${rollback_tickets[@]:1}"; do
