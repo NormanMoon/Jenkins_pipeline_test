@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 token=$1
 rollback_tickets=("${@:2}")
@@ -204,19 +205,20 @@ echo "These are the tickets that I'm going to update the descriptions of: ${pare
 
 # This is to update the tickets descriptions of the child tickets and newly made rollback tickets
 sub_tickets=()
-description=()
 for ticket in "${parent_description[@]}"; do
-     sub_tickets+=ticket
+     sub_tickets+=(ticket)
 done
-
+echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
 for ((i=1; i<${#sub_tickets[@]}; i ++)) {
+     echo"current subticket: ${sub_tickets[i]}"
+
      if ((i > 0)) &&  [[ ${parent_description[i-1]} == *"${next_step}"* ]]; then
           parent_description[i-1]=$(echo "${parent_description[i-1]}" | sed "s/${next_step}//g")
      fi
      parent_description[i]+=${next_step}
 
      description_string=${parent_description[*]}
-
+     echo"description being added ${parent_description[*]}"
      template='{
                "fields" : {
                  "description" : "%s"
