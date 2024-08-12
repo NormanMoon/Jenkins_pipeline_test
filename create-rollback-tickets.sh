@@ -167,14 +167,14 @@ latest_rollback_ticket_number="$(awk -F'"' '/"key":/ {print $8}' create-child-ti
 echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
 
 # This is the updating the descriptions for the new rollback tickets
-for ((i=${#number_of_rollback_tickets[@]}; i >= 0; i -- )); do
+for ((i=${#number_of_rollback_tickets[@]}; i >= 1; i -- )); do
      current_rollback_ticket_number=$((latest_rollback_ticket_number-i))
      current_rollback_ticket="COMP-${current_rollback_ticket_number}"
      parent_description+="\n${current_rollback_ticket}"
 done
 
 echo"This is the current ticket being added into the parent description: ${current_rollback_ticket_number}"
-echo"This is the parent description after the update: ${parent_description}"
+echo"This is the parent description after the update: ${parent_description[*]}"
 
 temp_parent_description="${parent_description[*]}"
 
