@@ -225,10 +225,10 @@ echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
 for ((i=0; i<${#children_tickets[@]}; i ++)) {
      echo"current subticket: ${sub_tickets[i]}"
 
-     if ((i > 0)) &&  [[ ${parent_description_array[i+7]} == *"${next_step}"* ]]; then
-          parent_description_array[i+6]=$(echo "${parent_description_array[i+6]}" | sed "s/${next_step}//g")
+     if ((i > 0)) &&  [[ ${parent_description_array[i+5]} == *"${next_step}"* ]]; then
+          parent_description_array[i+4]=$(echo "${parent_description_array[i+4]}" | sed "s/${next_step}//g")
      fi
-     parent_description_array[i+7]+=${next_step}
+     parent_description_array[i+5]+=${next_step}
 
      description_string=${parent_description_array[*]}
      echo"description being added ${parent_description_array[*]}"
