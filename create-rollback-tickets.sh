@@ -206,6 +206,7 @@ echo "These are the tickets that I'm going to update the descriptions of: ${pare
 # This is to update the tickets descriptions of the child tickets and newly made rollback tickets
 sub_tickets=()
 for ticket in "${parent_description[@]}"; do
+     echo"current ticket: ${ticket}"
      sub_tickets+=("${ticket}")
 done
 echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
