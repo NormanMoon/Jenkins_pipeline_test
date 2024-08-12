@@ -46,7 +46,6 @@ echo "This is the parent description: ${parent_description}"
 
 # This is the number of rollback tickets being made. Its used for updating the ticket descriptions
 number_of_rollback_tickets=$((${#rollback_tickets[@]}-1))
-echo "number of rollback tickets: ${rollback_tickets[*]}"
 
 for ticket in "${rollback_tickets[@]:1}"; do
 
@@ -188,7 +187,7 @@ template='{
 json_final=$(printf "$template" \
      "$temp_parent_description")
 
-curl -v -i -X -s PUT \
+curl -v -i -X PUT \
   -u norman.moon@aboutobjects.com:$token \
   -H "Content-Type:application/json" \
   -H "Accept: application/json" \
