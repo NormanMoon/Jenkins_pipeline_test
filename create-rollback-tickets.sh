@@ -174,7 +174,6 @@ for ((i=$((number_of_rollback_tickets-1)); i >= 0; i -- )); do
 done
 
 echo"This is the current ticket being added into the parent description: ${current_rollback_ticket_number}"
-echo"This is the parent description after the update: ${parent_description[*]}"
 
 temp_parent_description="${parent_description[*]}"
 
@@ -202,15 +201,23 @@ next_step="${bold} <---- current step ★${normal}"
 
 # Making a list of all the tickets
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
+IFS=' ' read -r -a parent_description_array <<< "$temp_parent_description"
+children_tickets=()
+for ((i=0; i<${#parent_description_array[@]}; i++)) {
+     if [[ ${parent_description_array[i]} == *"COMP"* ]]; then
+          children_tickets+=(parent_description_array[i])
+     fi
+}
+echo "update of tickets to update description of: "
 
 # This is to update the tickets descriptions of the child tickets and newly made rollback tickets
 sub_tickets=()
-for ticket in "${parent_description[@]}"; do
+for ticket in "${children_tickets[@]}"; do
      echo"current ticket: ${ticket}"
      sub_tickets+=("${ticket}")
 done
 echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
-for ((i=1; i<${#sub_tickets[@]}; i ++)) {
+for ((i=1; i<${#children_tickets[@]}; i ++)) {
      echo"current subticket: ${sub_tickets[i]}"
 
      if ((i > 0)) &&  [[ ${parent_description[i-1]} == *"${next_step}"* ]]; then
