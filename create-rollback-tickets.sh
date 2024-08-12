@@ -173,6 +173,9 @@ for ((i = ${number_of_rollback_tickets[@]}; i >= 0; i -- )); do
      parent_description+="\n${current_rollback_ticket}"
 done
 
+echo"This is the current ticket being added into the parent description: ${current_rollback_ticket}"
+echo"This is the parent description after the update: ${parent_description}"
+
 temp_parent_description="${parent_description[*]}"
 
 template='{
