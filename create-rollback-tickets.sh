@@ -203,7 +203,37 @@ next_step="${bold} <---- current step ★${normal}"
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
 # This is to update the tickets descriptions of the child tickets and newly made rollback tickets
-#for ticket in "${rollback_tickets[@]:1}"; do
+sub_tickets=()
+description=()
+for ticket in "${parent_description[@]}"; do
+     sub_tickets+=ticket
+done
 
+for ((i=1; i<${#sub_tickets[@]}; i ++)) {
+     if ((i > 0)) &&  [[ ${parent_description[i-1]} == *"${next_step}"* ]]; then
+          parent_description[i-1]=$(echo "${parent_description[i-1]}" | sed "s/${next_step}//g")
+     fi
+     parent_description[i]+=${next_step}
+
+     description_string=${parent_description[*]}
+
+     template='{
+               "fields" : {
+                 "description" : "%s"
+               }
+             }'
+     json_final=$(printf "$template" \
+         "$description_string")
+
+     curl -v -i -X PUT \
+               -u norman.moon@aboutobjects.com:$token \
+               -H "Content-Type:application/json" \
+               -H "Accept: application/json" \
+               -H "X-Atlassian-Token:no-check" \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${sub_tickets[i]}" \
+               -d \
+               "$json_final" \
+               -o update-task-test.out
+}
 
 
