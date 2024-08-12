@@ -223,7 +223,7 @@ for ((i=0; i<${#children_tickets[@]}; i ++)) {
      if ((i > 0)) &&  [[ ${parent_description[i]} == *"${next_step}"* ]]; then
           parent_description[i]=$(echo "${parent_description[i]}" | sed "s/${next_step}//g")
      fi
-     parent_description[i]+=${next_step}
+     parent_description_array[i+3]+=${next_step}
 
      description_string=${parent_description[*]}
      echo"description being added ${parent_description[*]}"
