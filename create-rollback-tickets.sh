@@ -46,6 +46,7 @@ echo "This is the parent description: ${parent_description}"
 
 # This is the number of rollback tickets being made. Its used for updating the ticket descriptions
 number_of_rollback_tickets=${rollback_tickets[*]}
+echo "number of rollback tickets: ${rollback_tickets[*]}"
 
 for ticket in "${rollback_tickets[@]:1}"; do
 
@@ -167,7 +168,7 @@ latest_rollback_ticket_number="$(awk -F'"' '/"key":/ {print $8}' create-child-ti
 echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
 
 # This is the updating the descriptions for the new rollback tickets
-for ((i=$((number_of_rollback_tickets-1)); i >= 1; i -- )); do
+for ((i=$((number_of_rollback_tickets-1)); i >= 0; i -- )); do
      current_rollback_ticket_number=$((latest_rollback_ticket_number-i))
      current_rollback_ticket="COMP-${current_rollback_ticket_number}"
      parent_description+="\n${current_rollback_ticket}"
