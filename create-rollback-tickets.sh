@@ -205,7 +205,7 @@ IFS=' ' read -r -a parent_description_array <<< "$temp_parent_description"
 children_tickets=()
 for ((i=0; i<${#parent_description_array[@]}; i++)) {
      if [[ ${parent_description_array[i]} == *"COMP"* ]]; then
-          children_tickets+=(parent_description_array[i])
+          children_tickets+=("${parent_description_array[i]}")
      fi
 }
 echo "update of tickets to update description of: "
