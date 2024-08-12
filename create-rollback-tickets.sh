@@ -216,12 +216,17 @@ for ticket in "${children_tickets[@]}"; do
      echo"current ticket: ${ticket}"
      sub_tickets+=("${ticket}")
 done
+for ((i=0; i<${#parent_description_array[@]}; i ++)) {
+     echo "current line: ${parent_description_array[i]}"
+}
+
+
 echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
 for ((i=0; i<${#children_tickets[@]}; i ++)) {
      echo"current subticket: ${sub_tickets[i]}"
 
-     if ((i > 0)) &&  [[ ${parent_description[i]} == *"${next_step}"* ]]; then
-          parent_description[i]=$(echo "${parent_description[i]}" | sed "s/${next_step}//g")
+     if ((i > 0)) &&  [[ ${parent_description_array[i+3]} == *"${next_step}"* ]]; then
+          parent_description_array[i+2]=$(echo "${parent_description_array[i+2]}" | sed "s/${next_step}//g")
      fi
      parent_description_array[i+3]+=${next_step}
 
