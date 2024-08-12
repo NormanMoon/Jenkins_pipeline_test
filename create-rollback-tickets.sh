@@ -225,8 +225,8 @@ for ((i=0; i<${#children_tickets[@]}; i ++)) {
      fi
      parent_description_array[i+3]+=${next_step}
 
-     description_string=${parent_description[*]}
-     echo"description being added ${parent_description[*]}"
+     description_string=${parent_description_array[*]}
+     echo"description being added ${parent_description_array[*]}"
      template='{
                "fields" : {
                  "description" : "%s"
