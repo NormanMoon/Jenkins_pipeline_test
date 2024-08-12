@@ -45,7 +45,7 @@ parent_description=${cleaned_parent_description}
 echo "This is the parent description: ${parent_description}"
 
 # This is the number of rollback tickets being made. Its used for updating the ticket descriptions
-number_of_rollback_tickets=${#rollback_tickets[@]}
+number_of_rollback_tickets=$((${#rollback_tickets[@]}-1))
 echo "number of rollback tickets: ${rollback_tickets[*]}"
 
 for ticket in "${rollback_tickets[@]:1}"; do
