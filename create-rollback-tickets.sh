@@ -167,7 +167,7 @@ latest_rollback_ticket_number="$(awk -F'"' '/"key":/ {print $8}' create-child-ti
 echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
 
 # This is the updating the descriptions for the new rollback tickets
-for ((i=${#number_of_rollback_tickets[@]}; i >= 1; i -- )); do
+for ((i=$((number_of_rollback_tickets-1)); i >= 1; i -- )); do
      current_rollback_ticket_number=$((latest_rollback_ticket_number-i))
      current_rollback_ticket="COMP-${current_rollback_ticket_number}"
      parent_description+="\n${current_rollback_ticket}"
@@ -187,7 +187,7 @@ template='{
 json_final=$(printf "$template" \
      "$temp_parent_description")
 
-curl -v -i -X PUT \
+curl -v -i -X -s PUT \
   -u norman.moon@aboutobjects.com:$token \
   -H "Content-Type:application/json" \
   -H "Accept: application/json" \
