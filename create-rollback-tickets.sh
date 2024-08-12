@@ -203,8 +203,8 @@ next_step="${bold} <---- current step ★${normal}"
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
 parent_description_array=()
-temp_parent_description=$(echo "$temp_parent_description" | tr "\n" " ")
-for i in $temp_parent_description; do
+temp_parent_descriptions=$(echo "$temp_parent_description" | tr "\n" " ")
+for i in $temp_parent_descriptions; do
      parent_description_array+=("$i")
 done
 
