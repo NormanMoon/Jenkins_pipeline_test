@@ -41,7 +41,7 @@ tickets=()
 
 # Loop through all arguments starting from the 7th
 for arg in "${@:7}"; do
-  # Check if the argument matches the pattern for tticket IDs (e.g., starts with NGD-)
+  # Check if the argument matches the pattern for ticket IDs (e.g., starts with NGD-)
   if [[ $arg =~ ^NGD- ]]; then
     tickets+=("$arg")
   fi
