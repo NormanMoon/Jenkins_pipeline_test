@@ -202,38 +202,19 @@ next_step="${bold} <---- current step ★${normal}"
 # Making a list of all the tickets
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 IFS=$'\n' read -r -t parent_description_array <<< "$temp_parent_description"
-echo"parent description array: ${parent_description_array[*]}"
+
 children_tickets=()
 for ((i=0; i<${#parent_description_array[@]}; i++)) {
      if [[ ${parent_description_array[i]} == *"COMP"* ]]; then
           children_tickets+=("${parent_description_array[i]}")
+          echo "child ticket to update: ${parent_description_array[i]}"
      fi
 }
-echo "update of tickets to update description of: "
-
-# This is to update the tickets descriptions of the child tickets and newly made rollback tickets
-sub_tickets=()
-for ticket in "${children_tickets[@]}"; do
-     echo"current ticket: ${ticket}"
-     sub_tickets+=("${ticket}")
-done
-for ((i=0; i<${#parent_description_array[@]}; i ++)) {
-     echo "current line: ${parent_description_array[i]}"
-}
+echo "update of tickets to update description of: ${children_tickets[*]}"
 
 
-echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
 for ((i=0; i<${#children_tickets[@]}; i ++)); do
-     echo"current subticket: ${sub_tickets[i]}"
 
-     if ((i > 0)) &&  [[ ${parent_description_array[i]} == *"${next_step}"* ]]; then
-          parent_description_array[i]=$(echo "${parent_description_array[i]}" | sed "s/${next_step}//g")
-     fi
-     parent_description_array[i]+=${next_step}
-
-     description_string=${parent_description_array[*]}
-     echo"description being added ${parent_description_array[*]}"
-     echo "sub ticket updating.... ${sub_tickets[i]}"
      template='{
                "fields" : {
                  "description" : "%s"
