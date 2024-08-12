@@ -168,7 +168,7 @@ echo "These are the ticket summaries: ${rollback_ticket_summaries[*]}"
 # This is the updating the descriptions for the new rollback tickets
 for ((i=${#number_of_rollback_tickets[@]}; i >= 0; i -- )); do
      echo
-     current_rollback_ticket_number=${latest_rollback_ticket_number}-i
+     current_rollback_ticket_number=$((${latest_rollback_ticket_number}-i))
      current_rollback_ticket="COMP-${current_rollback_ticket_number}"
      parent_description+="\n${current_rollback_ticket}"
 done
