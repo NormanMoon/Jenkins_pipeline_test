@@ -220,7 +220,7 @@ echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
 for ((i=0; i<${#children_tickets[@]}; i ++)) {
      echo"current subticket: ${sub_tickets[i]}"
 
-     if ((i > 0)) &&  [[ ${parent_description[i} == *"${next_step}"* ]]; then
+     if ((i > 0)) &&  [[ ${parent_description[i]} == *"${next_step}"* ]]; then
           parent_description[i]=$(echo "${parent_description[i]}" | sed "s/${next_step}//g")
      fi
      parent_description[i]+=${next_step}
