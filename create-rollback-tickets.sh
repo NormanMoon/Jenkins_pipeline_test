@@ -222,7 +222,7 @@ for ((i=0; i<${#parent_description_array[@]}; i ++)) {
 
 
 echo "Tickets to iterate over and update description: ${sub_tickets[*]}"
-for ((i=0; i<${#children_tickets[@]}; i ++)) {
+for ((i=0; i<${#children_tickets[@]}; i ++)); do
      echo"current subticket: ${sub_tickets[i]}"
 
      if ((i > 0)) &&  [[ ${parent_description_array[i+5]} == *"${next_step}"* ]]; then
@@ -232,6 +232,7 @@ for ((i=0; i<${#children_tickets[@]}; i ++)) {
 
      description_string=${parent_description_array[*]}
      echo"description being added ${parent_description_array[*]}"
+     echo "sub ticket updating.... ${sub_tickets[i]}"
      template='{
                "fields" : {
                  "description" : "%s"
@@ -249,6 +250,6 @@ for ((i=0; i<${#children_tickets[@]}; i ++)) {
                -d \
                "$json_final" \
                -o update-task-test.out
-}
+done
 
 
