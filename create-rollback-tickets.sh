@@ -214,7 +214,6 @@ done
 echo "children_tickets: ${children_tickets[*]}"
 
 delimited_string=$(printf "%s" "$parent_description" | sed 's/\\n/|/g')
-
 # Now split based on the new delimiter
 IFS='|' read -r -a array <<< "$delimited_string"
 
@@ -225,10 +224,10 @@ done
 
 for ((i=0; i<${#children_tickets[@]}; i ++)); do
 
-     if ((i > 0)) &&  [[ ${parent_description[i-1]} == *"${next_step}"* ]]; then
-          parent_description[i-1]=$(echo "${parent_description[i-1]}" | sed "s/${next_step}//g")
+     if ((i > 0)) &&  [[ ${parent_description[i+2]} == *"${next_step}"* ]]; then
+          parent_description[i+2]=$(echo "${parent_description[i+2]}" | sed "s/${next_step}//g")
      fi
-     parent_description[i]+=${next_step}
+     parent_description[i+3]+=${next_step}
 
 
      string_description=${parent_description[*]}
