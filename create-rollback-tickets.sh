@@ -203,13 +203,13 @@ next_step="${bold} <---- current step ★${normal}"
 # Initialize an empty array for children_tickets
 children_tickets=()
 
-# Split the content into lines and process each one
-while IFS=$'\n' read -r line; do
+# Replace literal '\n' with actual newlines, then process each line
+echo -e "${parent_description[@]}" | tr '\\n' '\n' | while IFS= read -r line; do
     # Add to children_tickets only if the line contains "COMP"
     if [[ $line == *"COMP"* ]]; then
         children_tickets+=("$line")
     fi
-done <<< "${parent_description[@]}"
+done
 
 # Output the filtered results
 echo "children_tickets: ${children_tickets[*]}"
