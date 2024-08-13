@@ -200,17 +200,23 @@ curl -v -i -X PUT \
 next_step="${bold} <---- current step ★${normal}"
 
 # Making a list of all the tickets
-echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
-
+# Convert literal '\n' to actual newlines
 temp_parent_description=$(echo -e "$temp_parent_description")
-IFS=$'\n' read -r -a temp <<<"$temp_parent_description"
+# Split temp_parent_description into an array based on spaces or newlines
+IFS=$'\n ' read -r -a temp <<<"$temp_parent_description"
+# Initialize an empty array for children_tickets
 children_tickets=()
+# Iterate over the array elements
 for ticket in "${temp[@]}"; do
-     if [[ $ticket == *"COMP"* ]]; then
-          children_tickets+=("$ticket")
-     fi
+    # Add to children_tickets only if the word contains "COMP"
+    if [[ $ticket == *"COMP"* ]]; then
+        children_tickets+=("$ticket")
+    fi
 done
+
+# Output the filtered results
 echo "children_tickets: ${children_tickets[*]}"
+
 
 
 for ((i=0; i<${#children_tickets[@]}; i ++)); do
