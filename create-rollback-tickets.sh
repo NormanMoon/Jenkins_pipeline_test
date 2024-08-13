@@ -203,7 +203,7 @@ next_step="${bold} <---- current step ★${normal}"
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
 
-readarrary -t children_tickets <<<"$temp_parent_description"
+readarray -t children_tickets <<<"$temp_parent_description"
 
 echo "update of tickets to update description of: ${children_tickets[*]}"
 
