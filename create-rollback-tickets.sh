@@ -202,11 +202,8 @@ next_step="${bold} <---- current step ★${normal}"
 # Making a list of all the tickets
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
-
-readarray -t temp <<<"$temp_parent_description"
-echo "update of tickets to update description of: ${temp[*]}"
+temp=y=${temp_parent_description%$'\n'*}
 children_tickets=()
-
 for ticket in "${temp[@]}"; do
      if [[ $ticket == *"COMP"* ]]; then
           children_tickets+=("$ticket")
