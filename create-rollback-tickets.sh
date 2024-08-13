@@ -231,7 +231,7 @@ for ((i=0; i<${#children_tickets[@]}; i ++)); do
 
 
      string_description=${parent_description[*]}
-
+     child_ticket="$(echo ${children_tickets[i]} | sed 's/ //g')"
      template='{
                "fields" : {
                  "description" : "%s"
@@ -245,7 +245,7 @@ for ((i=0; i<${#children_tickets[@]}; i ++)); do
                -H "Content-Type:application/json" \
                -H "Accept: application/json" \
                -H "X-Atlassian-Token:no-check" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${children_tickets[i]}" \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_ticket}" \
                -d \
                "$json_final" \
                -o update-task-test.out
