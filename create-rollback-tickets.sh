@@ -215,9 +215,9 @@ echo "children_tickets: ${children_tickets[*]}"
 
 delimited_string=$(printf "%s" "$parent_description" | sed 's/\\n/|/g')
 # Now split based on the new delimiter
-IFS='|' read -r -a array <<< "$delimited_string"
+IFS='|' read -r -a parent_description <<< "$delimited_string"
 
-for element in "${array[@]}"; do
+for element in "${parent_description[@]}"; do
     echo "$element"
 done
 
