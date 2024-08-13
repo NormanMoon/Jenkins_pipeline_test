@@ -207,7 +207,7 @@ IFS=$'\n ' read -r -a temp <<<"$temp_parent_description"
 # Initialize an empty array for children_tickets
 children_tickets=()
 # Iterate over the array elements
-for ticket in "${temp[@]}"; do
+for ticket in "${temp[*]}"; do
     # Add to children_tickets only if the word contains "COMP"
     if [[ $ticket == *"COMP"* ]]; then
         children_tickets+=("$ticket")
