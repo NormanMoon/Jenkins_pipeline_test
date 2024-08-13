@@ -213,6 +213,13 @@ done
 # Output the filtered results
 echo "children_tickets: ${children_tickets[*]}"
 
+# Convert the string into an array by splitting on newline
+IFS=$'\n' read -r -d '' -a array <<< "$parent_description"
+# Print each element of the array to verify
+for element in "${array[@]}"; do
+    echo "$element"
+done
+
 
 for ((i=0; i<${#children_tickets[@]}; i ++)); do
 
