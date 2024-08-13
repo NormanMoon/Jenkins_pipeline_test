@@ -203,8 +203,8 @@ next_step="${bold} <---- current step ★${normal}"
 # Initialize an empty array for children_tickets
 children_tickets=()
 
-# Iterate over the array elements (each element should be a line)
-while IFS= read -r line; do
+# Split the content into lines and process each one
+while IFS=$'\n' read -r line; do
     # Add to children_tickets only if the line contains "COMP"
     if [[ $line == *"COMP"* ]]; then
         children_tickets+=("$line")
