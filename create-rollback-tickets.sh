@@ -205,19 +205,24 @@ next_step="${bold} <---- current step ★${normal}"
 children_tickets=()
 
 IFS=' ' read -r -a temp <<< "$temp_parent_description"
-
 for ticket in "${temp[@]}"; do
      if [[ $ticket == *"COMP"* ]]; then
           children_tickets+=("$(echo -e "$ticket" | sed 's/\n//g')")
      fi
 done
-
 # Output the filtered results
 echo "children_tickets: ${children_tickets[*]}"
 
 
-
 for ((i=0; i<${#children_tickets[@]}; i ++)); do
+
+     if ((i > 0)) &&  [[ ${parent_description[i-1]} == *"${next_step}"* ]]; then
+          parent_description[i-1]=$(echo "${parent_description[i-1]}" | sed "s/${next_step}//g")
+     fi
+     parent_description[i]+=${next_step}
+
+
+     string_description=${parent_description[*]}
 
      template='{
                "fields" : {
@@ -225,14 +230,14 @@ for ((i=0; i<${#children_tickets[@]}; i ++)); do
                }
              }'
      json_final=$(printf "$template" \
-         "$description_string")
+         "$string_description")
 
      curl -v -i -X PUT \
                -u norman.moon@aboutobjects.com:$token \
                -H "Content-Type:application/json" \
                -H "Accept: application/json" \
                -H "X-Atlassian-Token:no-check" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${sub_tickets[i]}" \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${children_tickets[i]}" \
                -d \
                "$json_final" \
                -o update-task-test.out
