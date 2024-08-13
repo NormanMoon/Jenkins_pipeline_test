@@ -199,16 +199,18 @@ curl -v -i -X PUT \
 
 next_step="${bold} <---- current step ★${normal}"
 
-# Making a list of all the tickets
 # Convert literal '\n' to actual newlines
 temp_parent_description=$(echo -e "$temp_parent_description")
-# Split temp_parent_description into an array based on spaces or newlines
-IFS=$'\n ' read -r -a temp <<<"$temp_parent_description"
+
+# Split temp_parent_description into an array based on newlines only
+IFS=$'\n' read -r -d '' -a temp <<< "$(echo -e "$temp_parent_description\n")"
+
 # Initialize an empty array for children_tickets
 children_tickets=()
-# Iterate over the array elements
+
+# Iterate over the array elements (each element should be a line)
 for ticket in "${temp[@]}"; do
-    # Add to children_tickets only if the word contains "COMP"
+    # Add to children_tickets only if the line contains "COMP"
     if [[ $ticket == *"COMP"* ]]; then
         children_tickets+=("$ticket")
     fi
