@@ -202,6 +202,7 @@ next_step="${bold} <---- current step ★${normal}"
 # Making a list of all the tickets
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
+temp_parent_description=$(echo -e "$temp_parent_description")
 IFS=$'\n' read -r -a temp <<<"$temp_parent_description"
 children_tickets=()
 for ticket in "${temp[@]}"; do
