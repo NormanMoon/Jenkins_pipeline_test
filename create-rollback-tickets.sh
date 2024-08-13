@@ -42,6 +42,7 @@ parent_description=$(curl -s GET \
 cleaned_parent_description=$(echo "$parent_description" | sed 's/"description" ://g')
 cleaned_parent_description=$(echo "$cleaned_parent_description" | tr -d '",')
 parent_description=${cleaned_parent_description}
+parent_description+=" "
 echo "This is the parent description: ${parent_description}"
 
 # This is the number of rollback tickets being made. Its used for updating the ticket descriptions
