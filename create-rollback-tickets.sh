@@ -202,7 +202,7 @@ next_step="${bold} <---- current step ★${normal}"
 # Making a list of all the tickets
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
-temp=y=${temp_parent_description%$'\n'*}
+temp=${temp_parent_description%$'\n'*}
 children_tickets=()
 for ticket in "${temp[@]}"; do
      if [[ $ticket == *"COMP"* ]]; then
