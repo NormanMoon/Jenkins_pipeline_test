@@ -204,12 +204,12 @@ next_step="${bold} <---- current step ★${normal}"
 children_tickets=()
 
 # Iterate over the array elements (each element should be a line)
-for ticket in "${parent_description[@]}"; do
+while IFS= read -r line; do
     # Add to children_tickets only if the line contains "COMP"
-    if [[ $ticket == *"COMP"* ]]; then
-        children_tickets+=("$ticket")
+    if [[ $line == *"COMP"* ]]; then
+        children_tickets+=("$line")
     fi
-done
+done <<< "${parent_description[@]}"
 
 # Output the filtered results
 echo "children_tickets: ${children_tickets[*]}"
