@@ -202,19 +202,9 @@ next_step="${bold} <---- current step ★${normal}"
 # Making a list of all the tickets
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
-parent_description_array=()
-temp_parent_descriptions=$(echo "$temp_parent_description" | tr "\n" " ")
-for i in $temp_parent_descriptions; do
-     parent_description_array+=("$i")
-done
 
-children_tickets=()
-for ((i=0; i<${#parent_description_array[@]}; i++)) {
-     if [[ ${parent_description_array[i]} == *"COMP"* ]]; then
-          children_tickets+=("${parent_description_array[i]}")
-          echo "child ticket to update: ${parent_description_array[i]}"
-     fi
-}
+readarrary -t children_tickets <<<"$temp_parent_description"
+
 echo "update of tickets to update description of: ${children_tickets[*]}"
 
 
