@@ -207,7 +207,7 @@ readarray -t temp <<<"$temp_parent_description"
 echo "update of tickets to update description of: ${temp[*]}"
 children_tickets=()
 
-for ticket in "${temp[@]}" do
+for ticket in "${temp[@]}"; do
      if [[ $ticket == *"COMP"* ]]; then
           children_tickets+=("$ticket")
      fi
