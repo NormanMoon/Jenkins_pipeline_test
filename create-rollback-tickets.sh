@@ -208,8 +208,7 @@ IFS=' ' read -r -a temp <<< "$temp_parent_description"
 
 for ticket in "${temp[@]}"; do
      if [[ $ticket == *"COMP"* ]]; then
-          echo -e "$ticket" | sed 's/\n//g'
-          children_tickets+=("${ticket}")
+          children_tickets+=("$(echo -e "$ticket" | sed 's/\n//g')")
      fi
 done
 
