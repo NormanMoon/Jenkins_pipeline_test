@@ -214,9 +214,8 @@ done
 echo "children_tickets: ${children_tickets[*]}"
 
 # Convert the string into an array by splitting on newline
-IFS=$'\n' read -r -d '' -a array <<< "$(echo "$string" | awk '{ gsub(/\\n/, "\n"); print }')"
+IFS='\\n' read -r -a array <<< "$parent_description"
 
-# Print each element of the array to verify
 for element in "${array[@]}"; do
     echo "$element"
 done
