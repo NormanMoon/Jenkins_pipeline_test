@@ -203,9 +203,16 @@ next_step="${bold} <---- current step ★${normal}"
 echo "These are the tickets that I'm going to update the descriptions of: ${parent_description[*]}"
 
 
-readarray -t children_tickets <<<"$temp_parent_description"
+readarray -t temp <<<"$temp_parent_description"
+echo "update of tickets to update description of: ${temp[*]}"
+children_tickets=()
 
-echo "update of tickets to update description of: ${children_tickets[*]}"
+for ticket in "${temp[@]}" do
+     if [[ $ticket == *"COMP"* ]]; then
+          children_tickets+=("$ticket")
+     fi
+done
+echo "children_tickets: ${children_tickets[*]}"
 
 
 for ((i=0; i<${#children_tickets[@]}; i ++)); do
