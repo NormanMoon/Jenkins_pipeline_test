@@ -213,8 +213,10 @@ done
 # Output the filtered results
 echo "children_tickets: ${children_tickets[*]}"
 
-# Convert the string into an array by splitting on newline
-IFS='\\n' read -r -a array <<< "$parent_description"
+delimited_string=$(printf "%s" "$parent_description" | sed 's/\\n/|/g')
+
+# Now split based on the new delimiter
+IFS='|' read -r -a array <<< "$delimited_string"
 
 for element in "${array[@]}"; do
     echo "$element"
