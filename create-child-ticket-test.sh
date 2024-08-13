@@ -54,6 +54,7 @@ for ((j=1; j<${#child_tickets[@]}; j++)) do
     description+=("${child_tickets[j]}")
 
 done
+description+=(" ")
 
 
 child_tickets_keys=()
