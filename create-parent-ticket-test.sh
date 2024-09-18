@@ -6,7 +6,7 @@ token=$1
 services=("${@:2}")
 
 # Project ID
-project_id="10007"
+project_id="10008" # This is the project ID for project POP
 # This is always the same for parent tickets
 issuetype_id="10000"
 

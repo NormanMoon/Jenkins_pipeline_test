@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Project ID
-project_id="10007"
+project_id="10008"
 
 token=$1
 env=$2
