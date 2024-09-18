@@ -4,7 +4,9 @@
 project_id="10007"
 
 token=$1
-services=("${@:2}") # Get all arguments starting from the second one as an array
+env=$2
+application=$3
+services=("${@:4}") # Get all arguments starting from the second one as an array
 # Issue Type ID list (Patch, Configuration) (consul, staff, veteran,l=configuration, deployment=patch)
 issuetype_id=()
 cleaned_services=()
@@ -31,7 +33,6 @@ done
 #Parent ticket
 # This will awk the parent key from create-parent-ticket-test.out in the last line
 parent=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out)
-echo "parent ticket: $parent"
 
 child_tickets=("Deployment...\n Sequence of Steps:\n\n")
 
@@ -39,11 +40,6 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
      child_tickets+=("Ticket")
 done
 
-echo "ticket types ${issuetype_id[*]}"
-echo "children types ${child_tickets[*]}"
-
-
-##################################################################################################################
 
 
 description=("${child_tickets[0]}")

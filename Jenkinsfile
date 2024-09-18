@@ -14,7 +14,6 @@ pipeline {
                          rollback_tickets=params.TICKETS.split()
                          env=params.ENV
                          services=params.SERVICES.split()
-                         sh "echo ${services}"
                          application=params.APPLICATION
                          app_version=params.APPLICATION_VERSION
                          release_type=params.RELEASE_TYPE
@@ -25,7 +24,7 @@ pipeline {
                when { expression {!params.ROLLBACK} }
                steps {
                     script{
-                         sh "bash create-parent-ticket-test.sh ${TOKEN}"
+                         sh "bash create-parent-ticket-test.sh ${TOKEN} ${services}"
                     }
                }
           }
@@ -33,7 +32,7 @@ pipeline {
                when { expression {!params.ROLLBACK } }
                steps {
                     script{
-                         sh "bash create-child-ticket-test.sh ${TOKEN} ${services}"
+                         sh "bash create-child-ticket-test.sh ${TOKEN} ${env} ${application} ${services}"
                     }
                }
           }

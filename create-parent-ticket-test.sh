@@ -1,21 +1,43 @@
 #!/bin/bash
 set -x
 
+# This is the local Jira token, saved in the Jenkins pipeline
+token=$1
+services=("${@:2}")
 
 # Project ID
 project_id="10007"
-
+# This is always the same for parent tickets
 issuetype_id="10000"
 
 summary="Parent"
-
 description="Parent"
 
 
-##################################################################################################################
+
+# Cleaning up the services
+cleaned_services=()
+# This loop will remove all the un wanted characters from the services array
+for service in "${services[@]}"; do
+  cleaned_service="${service//[\[\],]/}"
+  cleaned_services+=("$cleaned_service")
+done
+# Overwrites the original service array with the cleaned version of service array
+services=("${cleaned_services[@]}")
+
+# This goes through the array services, if it contains main, hfd, or archive, and the application is not smartfhir then
+# it will exit the script, else it will continue.
+for service in "${services[@]}"; do
+     if [ "${service,,}" = "hfd" ] || [ "${service,,}" = "main" ] || [ "${service,,}" = "archive" ]; then
+          if [ "${application,,}" != "smartfhir" ]; then
+               echo "You are creating HFD, Main, and Archive tickets, but your application is no Smartfhir!"
+               exit 0
+          fi
+     fi
+done
 
 
-token=$1
+
 
 template='{
 
@@ -47,3 +69,5 @@ curl -v -i -X POST \
           -d \
           "$json_final" \
           -o create-parent-ticket-test.out
+
+cat create-parent-ticket-test.out
