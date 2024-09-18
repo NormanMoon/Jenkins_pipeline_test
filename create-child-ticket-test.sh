@@ -31,32 +31,38 @@ for ((j=0; j<${#services[@]}; j++)) do
 done
 
 #Parent ticket
-# This will awk the parent key from create-parent-ticket-test.out in the last line
-parent=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out)
+# This will awk the parent_ticket key from create-parent_ticket-ticket-test.out in the last line
+parent_ticket=$(awk -F'"' '/"key":/ {print $8}' create-parent_ticket-ticket-test.out)
 
 child_tickets=("Deployment...\n Sequence of Steps:\n\n")
+
+if [[ "${env,,}" == "sqa" ]] || [[ "${env,,}" == "sqa-beta" ]]; then
+     if [[ "${application}" == "smartfhir" ]]; then
+          parent_ticket="POP-5"
+     elif [[ "${application}" == "federator" ]]; then
+          parent_ticket="POP-4"
+     elif [[ "${application}" == "mirth" ]]; then
+          parent_ticket="POP-3"
+     elif [[ "${application,,}" == "governance-client" ]] || [[ "${application,,}" == "governance-service" ]]; then
+          parent_ticket="POP-6"
+     fi
+fi
+
 
 for ((j=0; j<${#issuetype_id[@]}; j++)) do
      child_tickets+=("Ticket")
 done
 
-
-
 description=("${child_tickets[0]}")
 
 for ((j=1; j<${#child_tickets[@]}; j++)) do
-
-
     description+=("${child_tickets[j]}")
-
 done
-description+=(" l")
 
 
 child_tickets_keys=()
 
 for ((j=0; j<${#issuetype_id[@]}; j++)) do
-
 
      if ((issuetype_id[j]==10008))  #Task
      then
@@ -73,7 +79,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                "issuetype": {
                   "id": "%s"
                },
-               "parent": {
+               "parent_ticket": {
                   "key": "%s"
                },
                "description": "%s"
@@ -84,7 +90,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                               "$summary" \
                               "$project_id" \
                               "$temp_issuetype" \
-                              "$parent" \
+                              "$parent_ticket" \
                               "$temp_description")
 
           curl -v -i -X POST \
@@ -97,7 +103,6 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                  "$json_final" \
                  -o create-child-ticket-test-subtask.out
 
-          child_tickets_keys+=("$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out)")
 
 
      elif ((issuetype_id[j]==10011))  #Bug
@@ -115,7 +120,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                "issuetype": {
                   "id": "%s"
                },
-               "parent": {
+               "parent_ticket": {
                   "key": "%s"
                },
                "description": "%s"
@@ -126,7 +131,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                               "$summary" \
                               "$project_id" \
                               "$temp_issuetype" \
-                              "$parent" \
+                              "$parent_ticket" \
                               "$temp_description")
 
           curl -v -i -X POST \
@@ -139,16 +144,10 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                  "$json_final" \
                  -o create-child-ticket-test-subtask.out
 
-          child_tickets_keys+=("$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out)")
-
-
      fi
-
 
 done
 
-
-
-
+cat create-child-ticket-test-subtask.out
 
 
