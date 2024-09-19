@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Project ID
 project_id="10008"
