@@ -42,7 +42,7 @@ services=("${cleaned_services[@]}")
 # These if statements are meant to convert the application to the appropriate image that will be used in the tickets summary
 image="" # This is the image that will be used in the ticket summary
 if [ "${application,,}" = "federator" ]; then
-     image=" pghd-fhir-federator "
+     image=" pghd-fhir-federator"
 elif [ "${application,,}" = "smartfhir" ]; then
      image="smart-pgd-fhir-service"
 elif [ "${application,,}" = "mirth" ] && { [ "${env,,}" = "prod" ] || [ "${env,,}" = "sqa" ]; } then
@@ -135,23 +135,27 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
      # vault description to the top of the ticket description, if its not a vault ticket, then we dont add the vault description
      # to the top of the current ticket description
      if [[ ${description[i],,} == *"vault"* ]]; then
-       description[0]="${vault_description} \n \n Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
+          description[0]="${vault_description} \n \n Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
      else
-       description[0]="Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
+          description[0]="Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
      fi
 
      # description[i] represents the last ticket because the size of description is +1 than the size of child_tickets
 
      # This will check if the last ticket has *<---- This sub-task is for this step* ⭐, if it does then we delete it
      if ((i > 0)) && [[ ${description[i]} == *"${next_step}"* ]]; then
-       description[i]=$(echo "${description[i]}" | sed "s/ \*<---- This sub-task is for this step\* ⭐//g")
+          description[i]=$(echo "${description[i]}" | sed "s/ \*<---- This sub-task is for this step\* ⭐//g")
      fi
      description[i+1]+=${next_step}
 
+     string_description=${description[*]}
+     summary_temp=${ticket_summaries[i]}
 
-  string_description=${description[*]}
-  summary_temp=${ticket_summaries[i]}
-  #string_summary=${tickets[i]}
+     if [[ "${env,,}" == "sqa" ]] || [[ "${env,,}" == "sqa-beta" ]]; then
+          string_description=${ticket_summaries[i]}
+     fi
+
+
   template='{
       "fields" : {
         "summary" : "%s",
