@@ -2,19 +2,20 @@
 set -x #helpful for troubleshooting
 
 
-prefix="COMP-"
+prefix="POP-"
 #Parent ticket
 parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out | sed 's/COMP-//')
-parent_ticket="COMP-${parent_ticket_num}"
+parent_ticket="POP-${parent_ticket_num}"
 last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out | sed 's/COMP-//')
 
 
 token=$1
 env=$2
-app=$3
+application=$3
 app_version=$4
 release_type=$5
-services=("${@:6}")
+vault_description="$6"
+services=("${@:7}")
 
 
 
@@ -22,10 +23,12 @@ services=("${@:6}")
 cleaned_release_type="${release_type//[\,]/}"
 # This will overwrite the original release_type with the cleaned_release_type
 release_type=$cleaned_release_type
-# This removes the {} from app version
+# This removes the {} from application version
 cleaned_app_version="${app_version//[\{\}]/}"
 # This will overwrite the original app_version with the cleaned_app_version
 app_version=$cleaned_app_version
+# Remove unwanted characters from the vault description
+vault_description="${vault_description//[\[\],]/}"
 
 cleaned_services=()
 # This loop will remove all the un wanted characters from the services array
@@ -36,96 +39,117 @@ done
 # Overwrites the original service array with the cleaned version of service array
 services=("${cleaned_services[@]}")
 
-# Initialize an empty array for tickets
-tickets=()
+# These if statements are meant to convert the applicationlication to the applicationropriate image that will be used in the tickets summary
+image="" # This is the image that will be used in the ticket summary
+if [ "${applicationlication,,}" = "federator" ]; then
+     image=" pghd-fhir-federator "
+elif [ "${applicationlication,,}" = "smartfhir" ]; then
+     image="smart-pgd-fhir-service"
+elif [ "${applicationlication,,}" = "mirth" ] && { [ "${env,,}" = "prod" ] || [ "${env,,}" = "sqa" ]; } then
+     image="tmc-v2"
+elif [ "${applicationlication,,}" = "mirth" ] && { [ "${env,,}" = "prod-beta" ] || [ "${env,,}" = "sqa-beta" ]; } then
+     image="mirth-server"
+elif [ "${applicationlication,,}" = "governance-client" ]; then
+     image="pghd-governance-mapplicationing-tool"
+elif [ "${applicationlication,,}" = "governance-service" ]; then
+     image=" pghd-governance-mapplicationing-tool-service"
+fi
 
-# Loop through all arguments starting from the 7th
-for arg in "${@:7}"; do
-  # Check if the argument matches the pattern for ticket IDs (e.g., starts with NGD-)
-  if [[ $arg =~ ^NGD- ]]; then
-    tickets+=("$arg")
-  fi
-done
-
-# Print the tickets
-for i in "${tickets[@]}"; do
-  echo "tickets: $i"
-done
-
-
-echo "services: ${services[1]}"
-
-# Federator has always one subticket , mirth one subticket, and smartfhir 3, gmt is 2 (front end or/and backend)
-# Whats your current environment?
-ticket_description=()
-
-child_tickets=("Deploy: ${app} $app_version \n \n Sequence of Steps:")
-
-for ((i=parent_ticket_num+1; i<=last_child_ticket_num; i++)) do
+# Place all child tickets in order here...
+child_tickets=()
+# This for loop will go to one ticket ahead of the parent ticket and then loop till it reaches the last child ticket
+# all the tickets in between are added to the child_ticket array as a child ticket
+for ((i=parent_ticket_num+1; i<=last_child_ticket_num; i++)); do
      child_tickets+=("${prefix}${i}")
 done
+echo " These are the child tickets: ${child_tickets[*]}"
 
-for ((i=0; i<=${#services[@]}; i++)) do
+# This creates the ticket description for each ticket (service)
+ticket_summaries=()
+for ((i=0; i<=${#services[@]}; i++)); do
+     if [ "${services[i],,}" = "vault" ]; then
 
-     if [ "${services[i],,}" = "deployment" ]; then
-          ticket_description+=("${env} Deploy Deployment for ${app} $app_version")
+          # If the vault description has the word "add" if it does then changing the description and summary accordingly
+          if [[ ${vault_description,,} == *"add"* ]]; then
+               ticket_summaries+=("${env}: add Vault key/value pairs for ${application}")
+               vault_description="Request to ADD the additional Vault key/value pairs to ${env} for ${image} \n \n ${vault_description}"
+          # If the vault description has the word "change" if it does then changing the description and summary accordingly
+          elif [[ ${vault_description,,} == *"change"* ]]; then
+               ticket_summaries+=("${env}: Vault change for ${application}")
+               vault_description="${vault_description}\n \n Please restart the pod for the ${image} deployment in ${env}"
+          # If the vault description is different then add or change, then the description is inserted as is
+          else
+               ticket_summaries+=("${env}: Vault update for ${application}")
+               vault_description="${vault_description} \n"
+          fi
+     # If the ticket is a deployment ticket, then "Deploy" will be in the summary, else its "Change"
+     elif [ "${services[i],,}" = "deployment" ]; then
+          ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application}")
      else
-          ticket_description+=("${env} Deploy ${services[i]} for ${app} $app_version")
+          ticket_summaries+=("${env}: Change ${image}:$app_version for ${application} ${services[i]}")
      fi
-
 done
 
-echo "child_tickets ${child_tickets[*]}"
+# This is the next step string that is added to the current step of the ticket description
+next_step=" *<---- This sub-task is for this step* ⭐"
 
-###################################################################################################################
-
-next_step="${bold} <---- current step ★${normal}"
-
-description=("${child_tickets[0]}")
-
-
-for ((j=1; j<${#child_tickets[@]}; j++)) ; do
-     description+=("\n${child_tickets[j]}")
+# This initializes the description for the parent ticket
+description=("${env}: ${release_type} Release of ${application} $app_version \n \n *Sequence of Steps:*")
+for ((j=0; j<${#child_tickets[@]}; j++)); do
+     description+=("\n${child_tickets[j]} ${ticket_summaries[j]}")
 done
+
 
 
 #Updates Parent Ticket Description
-string_description=${description[*]}
-parent_summary="${env} ${release_type} Release of ${app} $app_version - Parent Ticket"
-template='{
-    "fields" : {
-     "summary" : "%s",
-      "description" : "%s"
-    }
-  }'
+if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     string_description=${description[*]}
+     parent_summary="${env} ${release_type} Release of ${application} $app_version - Parent Ticket"
+     template='{
+         "fields" : {
+          "summary" : "%s",
+           "description" : "%s"
+         }
+       }'
 
 
-json_final=$(printf "$template" \
-     "$parent_summary" \
-     "$string_description")
+     json_final=$(printf "$template" \
+          "$parent_summary" \
+          "$string_description")
 
-curl -v -i -X PUT \
-  -u norman.moon@aboutobjects.com:$token \
-  -H "Content-Type:application/json" \
-  -H "Accept: application/json" \
-  -H "X-Atlassian-Token:no-check" \
-  "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_ticket}" \
-  -d \
-  "$json_final" \
-  -o update-task-test.out
+     curl -v -i -X PUT \
+       -u norman.moon@aboutobjects.com:$token \
+       -H "Content-Type:applicationlication/json" \
+       -H "Accept: applicationlication/json" \
+       -H "X-Atlassian-Token:no-check" \
+       "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_ticket}" \
+       -d \
+       "$json_final" \
+       -o update-task-test.out
+fi
+cat update-task-test.out
 
+for ((i=0; i<${#child_tickets[@]}; i++)); do
+     # If the description line has the word vault in it (meaning this current ticket is a vault ticket) then we add the
+     # vault description to the top of the ticket description, if its not a vault ticket, then we dont add the vault description
+     # to the top of the current ticket description
+     if [[ ${description[i],,} == *"vault"* ]]; then
+       description[0]="${vault_description} \n \n Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
+     else
+       description[0]="Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
+     fi
 
-for ((i=1; i<${#child_tickets[@]}; i++))
- do
-  if ((i > 0)) &&  [[ ${description[i-1]} == *"${next_step}"* ]]
-  then
-     description[i-1]=$(echo "${description[i-1]}" | sed "s/${next_step}//g")
-  fi
-  description[i]+=${next_step}
+     # description[i] represents the last ticket because the size of description is +1 than the size of child_tickets
+
+     # This will check if the last ticket has *<---- This sub-task is for this step* ⭐, if it does then we delete it
+     if ((i > 0)) && [[ ${description[i]} == *"${next_step}"* ]]; then
+       description[i]=$(echo "${description[i]}" | sed "s/ \*<---- This sub-task is for this step\* ⭐//g")
+     fi
+     description[i+1]+=${next_step}
 
 
   string_description=${description[*]}
-  summary_temp=${ticket_description[i-1]}
+  summary_temp=${ticket_summaries[i-1]}
   #string_summary=${tickets[i]}
   template='{
       "fields" : {
@@ -141,8 +165,8 @@ for ((i=1; i<${#child_tickets[@]}; i++))
 
      curl -v -i -X PUT \
           -u norman.moon@aboutobjects.com:$token \
-          -H "Content-Type:application/json" \
-          -H "Accept: application/json" \
+          -H "Content-Type:applicationlication/json" \
+          -H "Accept: applicationlication/json" \
           -H "X-Atlassian-Token:no-check" \
           "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" \
           -d \
@@ -150,14 +174,6 @@ for ((i=1; i<${#child_tickets[@]}; i++))
           -o update-task-test.out
 
 done
-
-
-
-
-
-
-
-
-
+cat update-task-test.out
 
 
