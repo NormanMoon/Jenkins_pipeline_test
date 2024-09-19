@@ -80,7 +80,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                "issuetype": {
                   "id": "%s"
                },
-               "parent_ticket": {
+               "parent": {
                   "key": "%s"
                },
                "description": "%s"
@@ -121,7 +121,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                "issuetype": {
                   "id": "%s"
                },
-               "parent_ticket": {
+               "parent": {
                   "key": "%s"
                },
                "description": "%s"
