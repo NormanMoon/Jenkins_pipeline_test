@@ -32,7 +32,7 @@ done
 
 #Parent ticket
 # This will awk the parent_ticket key from create-parent_ticket-ticket-test.out in the last line
-parent_ticket=$(awk -F'"' '/"key":/ {print $8}' create-parent_ticket-ticket-test.out)
+parent_ticket=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out)
 
 child_tickets=("Deployment...\n Sequence of Steps:\n\n")
 
