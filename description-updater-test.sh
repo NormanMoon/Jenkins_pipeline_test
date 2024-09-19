@@ -150,7 +150,7 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
 
 
   string_description=${description[*]}
-  summary_temp=${ticket_summaries[i-1]}
+  summary_temp=${ticket_summaries[i]}
   #string_summary=${tickets[i]}
   template='{
       "fields" : {
