@@ -39,21 +39,22 @@ done
 # Overwrites the original service array with the cleaned version of service array
 services=("${cleaned_services[@]}")
 
-# These if statements are meant to convert the applicationlication to the applicationropriate image that will be used in the tickets summary
+# These if statements are meant to convert the application to the appropriate image that will be used in the tickets summary
 image="" # This is the image that will be used in the ticket summary
-if [ "${applicationlication,,}" = "federator" ]; then
+if [ "${application,,}" = "federator" ]; then
      image=" pghd-fhir-federator "
-elif [ "${applicationlication,,}" = "smartfhir" ]; then
+elif [ "${application,,}" = "smartfhir" ]; then
      image="smart-pgd-fhir-service"
-elif [ "${applicationlication,,}" = "mirth" ] && { [ "${env,,}" = "prod" ] || [ "${env,,}" = "sqa" ]; } then
+elif [ "${application,,}" = "mirth" ] && { [ "${env,,}" = "prod" ] || [ "${env,,}" = "sqa" ]; } then
      image="tmc-v2"
-elif [ "${applicationlication,,}" = "mirth" ] && { [ "${env,,}" = "prod-beta" ] || [ "${env,,}" = "sqa-beta" ]; } then
+elif [ "${application,,}" = "mirth" ] && { [ "${env,,}" = "prod-beta" ] || [ "${env,,}" = "sqa-beta" ]; } then
      image="mirth-server"
-elif [ "${applicationlication,,}" = "governance-client" ]; then
-     image="pghd-governance-mapplicationing-tool"
-elif [ "${applicationlication,,}" = "governance-service" ]; then
-     image=" pghd-governance-mapplicationing-tool-service"
+elif [ "${application,,}" = "governance-client" ]; then
+     image="pghd-governance-mapping-tool"
+elif [ "${application,,}" = "governance-service" ]; then
+     image=" pghd-governance-mapping-tool-service"
 fi
+
 
 # Place all child tickets in order here...
 child_tickets=()
@@ -119,8 +120,8 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
 
      curl -v -i -X PUT \
        -u norman.moon@aboutobjects.com:$token \
-       -H "Content-Type:applicationlication/json" \
-       -H "Accept: applicationlication/json" \
+       -H "Content-Type:application/json" \
+       -H "Accept: application/json" \
        -H "X-Atlassian-Token:no-check" \
        "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_ticket}" \
        -d \
@@ -165,8 +166,8 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
 
      curl -v -i -X PUT \
           -u norman.moon@aboutobjects.com:$token \
-          -H "Content-Type:applicationlication/json" \
-          -H "Accept: applicationlication/json" \
+          -H "Content-Type:application/json" \
+          -H "Accept: application/json" \
           -H "X-Atlassian-Token:no-check" \
           "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" \
           -d \
