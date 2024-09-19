@@ -17,7 +17,7 @@ pipeline {
                          release_type=params.RELEASE_TYPE
                          vault_ticket_description = "\"${params.VAULT_DESCRIPTION}\""
                          rollback=params.ROLLBACK
-                         rollback_tickets=params.TICKETS.split()
+                         rollback_tickets=params.ROLLBACK_TICKETS.split()
                     }
                }
           }
