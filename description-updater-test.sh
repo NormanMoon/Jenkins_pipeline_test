@@ -4,9 +4,9 @@ set -x #helpful for troubleshooting
 
 prefix="POP-"
 #Parent ticket
-parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out | sed 's/COMP-//')
+parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out | sed 's/POP-//')
 parent_ticket="POP-${parent_ticket_num}"
-last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out | sed 's/COMP-//')
+last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out | sed 's/POP-//')
 
 
 token=$1
