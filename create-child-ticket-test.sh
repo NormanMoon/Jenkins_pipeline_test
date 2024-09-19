@@ -38,11 +38,11 @@ parent_ticket=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out)
 child_tickets=("Deployment...\n Sequence of Steps:\n\n")
 
 if [[ "${env,,}" == "sqa" ]] || [[ "${env,,}" == "sqa-beta" ]]; then
-     if [[ "${application}" == "smartfhir" ]]; then
+     if [[ "${application,,}" == "smartfhir" ]]; then
           parent_ticket="POP-5"
-     elif [[ "${application}" == "federator" ]]; then
+     elif [[ "${application,,}" == "federator" ]]; then
           parent_ticket="POP-4"
-     elif [[ "${application}" == "mirth" ]]; then
+     elif [[ "${application,,}" == "mirth" ]]; then
           parent_ticket="POP-3"
      elif [[ "${application,,}" == "governance-client" ]] || [[ "${application,,}" == "governance-service" ]]; then
           parent_ticket="POP-6"
