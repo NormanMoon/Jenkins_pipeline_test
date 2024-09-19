@@ -152,7 +152,11 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
      summary_temp=${ticket_summaries[i]}
 
      if [[ "${env,,}" == "sqa" ]] || [[ "${env,,}" == "sqa-beta" ]]; then
-          string_description=${ticket_summaries[i]}
+          if [[ ${description[i],,} == *"vault"* ]]; then
+               string_description=${vault_description}
+          else
+               string_description=${ticket_summaries[i]}
+          fi
      fi
 
 
