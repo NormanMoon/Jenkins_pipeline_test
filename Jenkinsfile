@@ -25,7 +25,7 @@ pipeline {
                when { expression {!params.ROLLBACK} }
                steps {
                     script{
-                         sh "bash create-parent-ticket-test.sh ${TOKEN} ${services}"
+                         sh "bash create-parent-ticket-test.sh ${TOKEN} ${application} ${env} ${services}"
                     }
                }
           }

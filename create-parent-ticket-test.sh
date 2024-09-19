@@ -3,7 +3,9 @@ set -x
 
 # This is the local Jira token, saved in the Jenkins pipeline
 token=$1
-services=("${@:2}")
+application=$2
+environment=$3
+services=("${@:4}")
 
 # Project ID
 project_id="10008" # This is the project ID for project POP
