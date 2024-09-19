@@ -60,7 +60,7 @@ fi
 child_tickets=()
 # This for loop will go to one ticket ahead of the parent ticket and then loop till it reaches the last child ticket
 # all the tickets in between are added to the child_ticket array as a child ticket
-for ((i=last_child_ticket_num-(${#services[@]}+1); i<=last_child_ticket_num; i++)); do
+for ((i=last_child_ticket_num-(${#services[@]}-1); i<=last_child_ticket_num; i++)); do
      child_tickets+=("${prefix}${i}")
 done
 echo " These are the child tickets: ${child_tickets[*]}"
