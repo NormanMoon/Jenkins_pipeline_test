@@ -61,8 +61,6 @@ for ((j=1; j<${#child_tickets[@]}; j++)) do
 done
 
 
-child_tickets_keys=()
-
 for ((j=0; j<${#issuetype_id[@]}; j++)) do
 
      if ((issuetype_id[j]==10008))  #Task
