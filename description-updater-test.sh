@@ -184,7 +184,8 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
           "$json_final" \
           -o update-task-test.out
 
+     cat update-task-test.out
 done
-cat update-task-test.out
+
 
 
