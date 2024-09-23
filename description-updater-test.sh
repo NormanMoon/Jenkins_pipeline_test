@@ -135,9 +135,9 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
      # vault description to the top of the ticket description, if its not a vault ticket, then we dont add the vault description
      # to the top of the current ticket description
      if [[ ${description[i],,} == *"vault"* ]]; then
-          description[0]=("${vault_description} \n \n Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*")
+          description[0]="${vault_description} \n \n Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
      else
-          description[0]=("Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*")
+          description[0]="Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
      fi
 
      # description[i] represents the last ticket because the size of description is +1 than the size of child_tickets
