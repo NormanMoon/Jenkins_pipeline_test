@@ -134,7 +134,7 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
      # If the description line has the word vault in it (meaning this current ticket is a vault ticket) then we add the
      # vault description to the top of the ticket description, if its not a vault ticket, then we dont add the vault description
      # to the top of the current ticket description
-     if [[ ${description[i],,} == *"vault"* ]]; then
+     if [[ ${ticket_summaries[i],,} == *"vault"* ]]; then
           description[0]="${vault_description} \n \n Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
      else
           description[0]="Deploy: ${image}:$app_version to ${services[i-1]} \n \n *Sequence of Steps:*"
