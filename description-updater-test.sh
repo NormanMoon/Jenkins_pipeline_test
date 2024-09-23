@@ -97,7 +97,7 @@ next_step=" *<---- This sub-task is for this step* ⭐"
 # This initializes the description for the parent ticket
 description=("${env}: ${release_type} Release of ${application} $app_version \n \n *Sequence of Steps:*")
 for ((j=0; j<${#child_tickets[@]}; j++)); do
-     description+=("\n${child_tickets[j]} ${icj[j]}")
+     description+=("\n${child_tickets[j]} ${ticket_summaries[j]}")
 done
 
 
