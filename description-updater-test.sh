@@ -149,6 +149,8 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
      description[i+1]+=${next_step}
 
      string_description=${description[*]}
+
+
      summary_temp=${ticket_summaries[i]}
 
      if [[ "${env,,}" == "sqa" ]] || [[ "${env,,}" == "sqa-beta" ]]; then
@@ -158,7 +160,7 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
                string_description=${ticket_summaries[i]}
           fi
      fi
-
+     string_description=$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')
 
   template='{
       "fields" : {
