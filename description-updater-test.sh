@@ -167,9 +167,11 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
       }
     }'
 
-  json_final=$(printf "$template" \
-    "$summary_temp" \
-    "$string_description")
+     json_final=$(printf "$template" \
+          "$summary_temp" \
+          "$string_description")
+
+     echo ""${json_final}"
 
 
      curl -v -i -X PUT \
