@@ -171,7 +171,7 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
           "$summary_temp" \
           "$string_description")
 
-     echo ""${json_final}"
+     echo "${json_final}"
 
 
      curl -v -i -X PUT \
