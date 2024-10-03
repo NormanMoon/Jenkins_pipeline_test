@@ -2,39 +2,46 @@
 set -x
 
 token=$1
-rollback_tickets=("${@:2}")
-echo "Rollback Tickets before cleaning: ${rollback_tickets[*]}"
+rollback_version=$2
+parent_child_tickets=("${@:3}")
+
+echo "Rollback Tickets before cleaning: ${parent_child_tickets[*]}"
 
 project_id="10007"
 
-cleaned_rollback_tickets=()
+prefix="POP-"
+# This is an array to specify the issue type for each ticket. The order should be the same as order the rollback tickets are being made
+issuetypes=()
+# New Rollback ticket summaries in same order as the issuetypes()
+rollback_ticket_summaries=()
+
+# a separate array to hold the tickets from the parent_child_tickets but in a clean format, so no extra spaces, or symbols
+cleaned_parent_child_tickets=()
 # This loop will remove all the un wanted characters from the services array
-for ticket in "${rollback_tickets[@]}"; do
+for ticket in "${parent_child_tickets[@]}"; do
   cleaned_rollback_ticket="${ticket//[\[\],]/}"
   cleaned_rollback_tickets+=("$cleaned_rollback_ticket")
 done
 
 # Overwrites the original service array with the cleaned version of service array
-rollback_tickets=("${cleaned_rollback_tickets[@]}")
-parent_ticket=${rollback_tickets[0]}
-echo "Rollback Tickets after cleaning: ${rollback_tickets[*]}"
+parent_child_tickets=("${cleaned_parent_child_tickets[@]}")
+parent_ticket=${parent_child_tickets[0]} # The first element in the array should always be the parent
+echo "Rollback Tickets after cleaning: ${parent_child_tickets[*]}"
 
-
-rollback_ticket_summaries=()
 ticket_summary=$(curl -s GET \
                          -u norman.moon@aboutobjects.com:"$token" \
-                         "https://normanmoon.atlassian.net/rest/api/2/issue/${rollback_tickets[0]}" | \
+                         "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_child_tickets[0]}" | \
                                                                                         json_pp | \
                                                                                         grep summary )
 
-echo "issuetype: ${issuetype}"
+echo "issuetype: ${issuetypes}"
 cleaned_ticket_summary=$(echo "$ticket_summary" | sed 's/summary//g')
 cleaned_ticket_summary=$(echo "$cleaned_ticket_summary" | tr -d '",:')
 rollback_ticket_summaries+=("${cleaned_ticket_summary}")
 
 parent_description=$(curl -s GET \
                          -u norman.moon@aboutobjects.com:"$token" \
-                         "https://normanmoon.atlassian.net/rest/api/2/issue/${rollback_tickets[0]}" | \
+                         "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_child_tickets[0]}" | \
                                                                                         json_pp | \
                                                                                         grep description | \
                                                                                         grep -w Sequence)
@@ -46,9 +53,9 @@ parent_description+=" "
 echo "This is the parent description: ${parent_description}"
 
 # This is the number of rollback tickets being made. Its used for updating the ticket descriptions
-number_of_rollback_tickets=$((${#rollback_tickets[@]}-1))
+number_of_rollback_tickets=$((${#parent_child_tickets[@]}-1))
 
-for ticket in "${rollback_tickets[@]:1}"; do
+for ticket in "${parent_child_tickets[@]:1}"; do
 
      current_issuetype=0
      ticket_summary=$(curl -s GET \
@@ -83,11 +90,11 @@ for ticket in "${rollback_tickets[@]:1}"; do
 
      if [[ ${cleaned_ticket_summary,,} == *"deployment"* ]]; then
           current_issuetype=10011
-          issuetype+=current_issuetype
+          issuetypes+=current_issuetype
 
      else
           current_issuetype=10008
-          issuetype+=current_issuetype
+          issuetypes+=current_issuetype
      fi
      echo "The current ticket issuetype: ${current_issuetype}"
      if ((current_issuetype==10011)); then

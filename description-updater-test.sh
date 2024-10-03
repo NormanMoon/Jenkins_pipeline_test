@@ -70,19 +70,9 @@ ticket_summaries=()
 for ((i=0; i<=${#services[@]}; i++)); do
      if [ "${services[i],,}" = "vault" ]; then
 
-          # If the vault description has the word "add" if it does then changing the description and summary accordingly
-          if [[ ${vault_description,,} == *"add"* ]]; then
-               ticket_summaries+=("${env}: add Vault key/value pairs for ${application}")
-               vault_description="Request to ADD the additional Vault key/value pairs to ${env} for ${image} \n \n ${vault_description}"
-          # If the vault description has the word "change" if it does then changing the description and summary accordingly
-          elif [[ ${vault_description,,} == *"change"* ]]; then
-               ticket_summaries+=("${env}: Vault change for ${application}")
-               vault_description="${vault_description}\n \n Please restart the pod for the ${image} deployment in ${env}"
-          # If the vault description is different then add or change, then the description is inserted as is
-          else
-               ticket_summaries+=("${env}: Vault update for ${application}")
-               vault_description="${vault_description} \n"
-          fi
+          ticket_summaries+=("${env}: Vault update for ${application}")
+          vault_description="${vault_description} \n"
+
      # If the ticket is a deployment ticket, then "Deploy" will be in the summary, else its "Change"
      elif [ "${services[i],,}" = "deployment" ]; then
           ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application}")
