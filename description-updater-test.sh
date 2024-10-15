@@ -58,9 +58,17 @@ fi
 
 # Place all child tickets in order here...
 child_tickets=()
+
+if [ "${application,,}" = "smartfhir" ]; then
+     num_of_child_tickets=${#services[@]}-1
+     num_of_child_tickets=$num_of_child_tickets+2
+else
+     num_of_child_tickets=${#services[@]}-1
+fi
+
 # This for loop will go to one ticket ahead of the parent ticket and then loop till it reaches the last child ticket
 # all the tickets in between are added to the child_ticket array as a child ticket
-for ((i=last_child_ticket_num-(${#services[@]}-1); i<=last_child_ticket_num; i++)); do
+for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
      child_tickets+=("${prefix}${i}")
 done
 echo " These are the child tickets: ${child_tickets[*]}"
