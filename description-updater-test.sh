@@ -74,6 +74,10 @@ for ((i=0; i<=${#services[@]}; i++)); do
           vault_description="${vault_description} \n"
 
      # If the ticket is a deployment ticket, then "Deploy" will be in the summary, else its "Change"
+     elif [ "${services[i],,}" = "deployment" ] && [ "${application,,}" = "smartfhir" ]; then
+          ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application} to Main")
+          ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application} to HFD")
+          ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application} to Arch")
      elif [ "${services[i],,}" = "deployment" ]; then
           ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application}")
      else

@@ -24,7 +24,11 @@ services=("${cleaned_services[@]}")
 
 for ((j=0; j<${#services[@]}; j++)) do
      echo "Service Name : ${services[j],,}"
-     if [[ "${services[j],,}" = "deployment" ]]; then
+     if [[ "${services[j],,}" = "deployment" ]] && [[ "${application,,}" = "smartfhir" ]]; then
+          issuetype_id+=("10011")
+          issuetype_id+=("10011")
+          issuetype_id+=("10011")
+     elif [[ "${services[j],,}" = "deployment" ]]; then
           issuetype_id+=("10011")
      else
           issuetype_id+=("10008")
