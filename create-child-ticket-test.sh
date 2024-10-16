@@ -21,16 +21,16 @@ done
 echo "cleaned services at top of script: ${cleaned_services[*]}"
 # Overwrites the original service array with the cleaned version of service array
 if [ ${application,,} = "smartfhir" ]; then
-     for ((j=0; j<${#services[@]}; j++)) do
-          if [[ "${services[j],,}" = "deployment" ]]; then
+     for ((j=0; j<${#cleaned_services[@]}; j++)) do
+          if [[ "${cleaned_services[j],,}" = "deployment" ]]; then
                unset 'services[j]'
           fi
      done
      # Reindex the array after unsetting
-     services=("${services[@]}")
-     services+=("Main")
-     services+=("HFD")
-     services+=("Arch")
+     cleaned_services=("${services[@]}")
+     cleaned_services+=("Main")
+     cleaned_services+=("HFD")
+     cleaned_services+=("Arch")
 fi
 
 
