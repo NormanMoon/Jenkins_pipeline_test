@@ -20,6 +20,18 @@ for service in "${services[@]}"; do
 done
 echo "cleaned services at top of script: ${cleaned_services[*]}"
 # Overwrites the original service array with the cleaned version of service array
+if [ ${application,,} = "smartfhir" ]; then
+     for ((j=0; j<${#services[@]}; j++)) do
+          if [[ "${services[j],,}" = "deployment" ]]; then
+               unset 'services[j]'
+          fi
+     done
+     services+=("Main")
+     services+=("HFD")
+     services+=("Arch")
+fi
+
+
 services=("${cleaned_services[@]}")
 
 for ((j=0; j<${#services[@]}; j++)) do

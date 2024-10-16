@@ -39,6 +39,17 @@ done
 # Overwrites the original service array with the cleaned version of service array
 services=("${cleaned_services[@]}")
 
+if [ ${application,,} = "smartfhir" ]; then
+     for ((j=0; j<${#services[@]}; j++)) do
+          if [[ "${services[j],,}" = "deployment" ]]; then
+               unset 'services[j]'
+          fi
+     done
+     services+=("Main")
+     services+=("HFD")
+     services+=("Arch")
+fi
+
 # These if statements are meant to convert the application to the appropriate image that will be used in the tickets summary
 image="" # This is the image that will be used in the ticket summary
 if [ "${application,,}" = "federator" ]; then
