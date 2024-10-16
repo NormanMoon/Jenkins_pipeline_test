@@ -26,6 +26,8 @@ if [ ${application,,} = "smartfhir" ]; then
                unset 'services[j]'
           fi
      done
+     # Reindex the array after unsetting
+     services=("${services[@]}")
      services+=("Main")
      services+=("HFD")
      services+=("Arch")
