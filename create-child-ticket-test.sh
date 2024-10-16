@@ -33,6 +33,7 @@ fi
 
 
 services=("${cleaned_services[@]}")
+echo "services after cleaning: ${services[*]}"
 
 for ((j=0; j<${#services[@]}; j++)) do
      echo "Service Name : ${services[j],,}"
