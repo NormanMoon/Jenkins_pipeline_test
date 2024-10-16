@@ -45,6 +45,8 @@ if [ ${application,,} = "smartfhir" ]; then
                unset 'services[j]'
           fi
      done
+     # Reindex the array after unsetting
+     services=("${services[@]}")
      services+=("Main")
      services+=("HFD")
      services+=("Arch")
@@ -70,12 +72,7 @@ fi
 # Place all child tickets in order here...
 child_tickets=()
 
-if [ "${application,,}" = "smartfhir" ]; then
-     num_of_child_tickets=${#services[@]}-1
-     num_of_child_tickets=$num_of_child_tickets+2
-else
-     num_of_child_tickets=${#services[@]}-1
-fi
+num_of_child_tickets=${#services[@]}-1
 
 # This for loop will go to one ticket ahead of the parent ticket and then loop till it reaches the last child ticket
 # all the tickets in between are added to the child_ticket array as a child ticket
