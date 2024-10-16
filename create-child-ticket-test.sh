@@ -27,7 +27,7 @@ if [ ${application,,} = "smartfhir" ]; then
           fi
      done
      # Reindex the array after unsetting
-     cleaned_services=("${services[@]}")
+     cleaned_services=("${cleaned_services[@]}")
      cleaned_services+=("Main")
      cleaned_services+=("HFD")
      cleaned_services+=("Arch")
