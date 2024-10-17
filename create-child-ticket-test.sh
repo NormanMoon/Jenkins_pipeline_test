@@ -23,7 +23,7 @@ echo "cleaned services at top of script: ${cleaned_services[*]}"
 if [ ${application,,} = "smartfhir" ]; then
      for ((j=0; j<${#cleaned_services[@]}; j++)) do
           if [[ "${cleaned_services[j],,}" = "deployment" ]]; then
-               unset 'services[j]'
+               unset 'cleaned_services[j]'
           fi
      done
      # Reindex the array after unsetting
