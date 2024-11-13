@@ -30,7 +30,6 @@ if [ ${application,,} = "smartfhir" ]; then
      cleaned_services=("${cleaned_services[@]}")
      cleaned_services+=("Main")
      cleaned_services+=("HFD")
-     cleaned_services+=("Arch")
 fi
 
 
