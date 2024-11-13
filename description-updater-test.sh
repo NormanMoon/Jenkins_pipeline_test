@@ -49,7 +49,6 @@ if [ ${application,,} = "smartfhir" ]; then
      services=("${services[@]}")
      services+=("Main")
      services+=("HFD")
-     services+=("Arch")
 fi
 
 # These if statements are meant to convert the application to the appropriate image that will be used in the tickets summary
@@ -93,7 +92,6 @@ for ((i=0; i<=${#services[@]}; i++)); do
      elif [ "${services[i],,}" = "deployment" ] && [ "${application,,}" = "smartfhir" ]; then
           ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application} to Main")
           ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application} to HFD")
-          ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application} to Arch")
      elif [ "${services[i],,}" = "deployment" ]; then
           ticket_summaries+=("${env}: Deploy ${image}:$app_version for ${application}")
      else
