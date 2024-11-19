@@ -32,24 +32,26 @@ vault_description="${vault_description//[\[\],]/}"
 
 cleaned_services=()
 # This loop will remove all the un wanted characters from the services array
+echo "services at top of script: ${services[*]}"
 for service in "${services[@]}"; do
   cleaned_service="${service//[\[\],]/}"
   cleaned_services+=("$cleaned_service")
 done
+echo "cleaned services at top of script: ${cleaned_services[*]}"
 # Overwrites the original service array with the cleaned version of service array
-services=("${cleaned_services[@]}")
-
 if [ ${application,,} = "smartfhir" ]; then
-     for ((j=0; j<${#services[@]}; j++)) do
-          if [[ "${services[j],,}" = "deployment" ]]; then
-               unset 'services[j]'
+     for ((j=0; j<${#cleaned_services[@]}; j++)) do
+          if [[ "${cleaned_services[j],,}" = "deployment" ]]; then
+               unset 'cleaned_services[j]'
           fi
      done
      # Reindex the array after unsetting
-     services=("${services[@]}")
-     services+=("Main")
-     services+=("HFD")
+     cleaned_services=("${cleaned_services[@]}")
+     cleaned_services+=("Main")
+     cleaned_services+=("HFD")
 fi
+services=("${cleaned_services[@]}")
+echo "services after cleaning: ${services[*]}"
 
 # These if statements are meant to convert the application to the appropriate image that will be used in the tickets summary
 image="" # This is the image that will be used in the ticket summary
