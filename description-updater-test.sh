@@ -211,5 +211,16 @@ done
 cat pr_ticket_list.txt
 
 
+child_tickets_arr=()
+
+while IFS="" read -r ticket
+do
+     child_tickets_arr+="$p"
+done < pr_ticket_list.txt
+
+for l in child_tickets_arr; do
+     echo "$l"
+done
+
 
 
