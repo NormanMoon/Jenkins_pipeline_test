@@ -199,11 +199,11 @@ done
 
 for ((i=0; i<${#child_tickets[@]}; i++)); do
      if [[ ${ticket_summaries[i],,} == *"staff"* ]]; then
-          ${child_tickets[i]} >> pr_ticket_list.txt
+          echo "${child_tickets[i]}" >> pr_ticket_list.txt
      elif [[ ${ticket_summaries[i],,} == *"veteran"* ]]; then
-          ${child_tickets[i]} >> pr_ticket_list.txt
+          echo "${child_tickets[i]}" >> pr_ticket_list.txt
      elif [[ ${ticket_summaries[i],,} == *"consul"* ]]; then
-          ${child_tickets[i]} >> pr_ticket_list.txt
+          echo "${child_tickets[i]}" >> pr_ticket_list.txt
      fi
 done
 
