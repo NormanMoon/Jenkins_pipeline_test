@@ -215,10 +215,10 @@ child_tickets_arr=()
 
 while IFS="" read -r ticket
 do
-     child_tickets_arr+="$p"
+     child_tickets_arr+=("$ticket")
 done < pr_ticket_list.txt
 
-for l in child_tickets_arr; do
+for l in "${child_tickets_arr[@]}"; do
      echo "$l"
 done
 
