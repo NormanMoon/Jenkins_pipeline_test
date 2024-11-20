@@ -197,7 +197,7 @@ for ((i=0; i<${#child_tickets[@]}; i++)); do
      cat update-task-test.out
 done
 
-for ((i=0; j<${#child_tickets[@]}; i++)); do
+for ((i=0; i<${#child_tickets[@]}; i++)); do
      if [[ ${ticket_summaries[i],,} == *"staff"* ]]; then
           ${child_tickets[i]} >> pr_ticket_list.txt
      elif [[ ${ticket_summaries[i],,} == *"veteran"* ]]; then
