@@ -28,12 +28,10 @@ parent_child_tickets=("${cleaned_parent_child_tickets[@]}")
 parent_ticket=${parent_child_tickets[0]} # The first element in the array should always be the parent
 echo "Rollback Tickets after cleaning: ${parent_child_tickets[*]}"
 
-curl -s -u norman.moon@aboutobjects.com:"$token" https://normanmoon.atlassian.net/rest/api/2/myself
-
 
 ticket_summary=$(curl -s GET \
                          -u norman.moon@aboutobjects.com:"$token" \
-                         "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_child_tickets[0]}" | \
+                         "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_ticket}" | \
                                                                                         json_pp | \
                                                                                         grep summary )
 
@@ -44,7 +42,7 @@ rollback_ticket_summaries+=("${cleaned_ticket_summary}")
 
 parent_description=$(curl -s GET \
                          -u norman.moon@aboutobjects.com:"$token" \
-                         "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_child_tickets[0]}" | \
+                         "https://normanmoon.atlassian.net/rest/api/2/issue/${parent_ticket}" | \
                                                                                         json_pp | \
                                                                                         grep description | \
                                                                                         grep -w Sequence)
