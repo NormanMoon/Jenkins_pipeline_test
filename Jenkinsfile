@@ -18,6 +18,7 @@ pipeline {
                          vault_ticket_description = "\"${params.VAULT_DESCRIPTION}\""
                          rollback=params.ROLLBACK
                          rollback_tickets=params.ROLLBACK_TICKETS.split()
+                         ticket_description_change=params.TICKET_DESCRIPTION_CHANGE_LIST.split()
                     }
                }
           }
@@ -50,6 +51,15 @@ pipeline {
                steps {
                     script {
                          sh "bash create-rollback-tickets.sh ${TOKEN} ${rollback_tickets}"
+                    }
+               }
+          }
+          stage('Changing Ticket Description') {
+               steps {
+                    script{
+                         when { expression {!params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
+                              sh "bash description-updated-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
+                         }
                     }
                }
           }
