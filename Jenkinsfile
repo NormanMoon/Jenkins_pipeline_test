@@ -55,9 +55,9 @@ pipeline {
                }
           }
           stage('Changing Ticket Description') {
+               when { expression {!params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         when { expression {!params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                               sh "bash description-updated-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
                          }
                     }
