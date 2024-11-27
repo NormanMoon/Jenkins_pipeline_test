@@ -20,10 +20,9 @@ for service in "${services[@]}"; do
 done
 
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
-     parent_ticket="${child_tickets[0]}"
-     # this will delete the first element (because it's the parent ticket) and we dont want that to be considered
-     # as a child ticket later on in the script
-     child_tickets=( "${child_tickets[@]/${child_tickets[0]}}" )
+     unset 'child_tickets[0]'
+     # Reindex the array after unsetting
+     child_tickets=("${child_tickets[@]}")
 fi
 
 for child_ticket in "${child_tickets[@]}"; do
