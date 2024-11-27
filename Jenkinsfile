@@ -23,7 +23,7 @@ pipeline {
                }
           }
           stage('Creating Parent Ticket') {
-               when { expression {!params.ROLLBACK} }
+               when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
                          sh "bash create-parent-ticket-test.sh ${TOKEN} ${application} ${env} ${services}"
@@ -31,7 +31,7 @@ pipeline {
                }
           }
           stage('Creating Child Ticket') {
-               when { expression {!params.ROLLBACK } }
+               when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
                          sh "bash create-child-ticket-test.sh ${TOKEN} ${env} ${application} ${services}"
@@ -39,7 +39,7 @@ pipeline {
                }
           }
           stage('Updating Tickets') {
-               when { expression {!params.ROLLBACK } }
+               when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
                          sh "bash description-updater-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
@@ -47,7 +47,7 @@ pipeline {
                }
           }
           stage('Rollback Tickets') {
-               when { expression {return params.ROLLBACK} }
+               when { expression {return params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script {
                          sh "bash create-rollback-tickets.sh ${TOKEN} ${rollback_tickets}"
@@ -58,7 +58,7 @@ pipeline {
                when { expression {!params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash description-updated-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
+                         sh "bash change-ticket-description.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services} ${ticket_description_change}"
                     }
                }
           }
