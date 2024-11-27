@@ -22,7 +22,14 @@ for child_ticket in "${child_tickets[@]}"; do
      echo "$child_ticket"
 done
 
-parent_ticket="${child_tickets[0]}"
+
+
+if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     parent_ticket="${child_tickets[0]}"
+     # this will delete the first element (because it's the parent ticket) and we dont want that to be considered
+     # as a child ticket later on in the script
+     child_tickets=( "${child_tickets[@]/${child_tickets[0]}}" )
+fi
 
 #This will remove the ',' from the release_type and
 cleaned_release_type="${release_type//[\,]/}"
@@ -106,9 +113,6 @@ done
 
 #Updates Parent Ticket Description
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
-     # this will delete the first element (because it's the parent ticket) and we dont want that to be considered
-     # as a child ticket later on in the script
-     child_tickets=( "${child_tickets[@]/${child_tickets[0]}}" )
 
      string_description=${description[*]}
      parent_summary="${env} ${release_type} Release of ${application} $app_version - Parent Ticket"
