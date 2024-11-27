@@ -7,7 +7,7 @@ application=$3
 app_version=$4
 release_type=$5
 vault_description="$6"
-services=("${@:7}")
+services="$7"
 child_tickets=("${@:8}")
 
 parent_ticket="${child_tickets[0]}"
