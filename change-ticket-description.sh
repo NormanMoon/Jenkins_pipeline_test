@@ -106,6 +106,10 @@ done
 
 #Updates Parent Ticket Description
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     # this will delete the first element (because it's the parent ticket) and we dont want that to be considered
+     # as a child ticket later on in the script
+     child_tickets=( "${child_tickets[@]/${child_tickets[0]}}" )
+
      string_description=${description[*]}
      parent_summary="${env} ${release_type} Release of ${application} $app_version - Parent Ticket"
      template='{
