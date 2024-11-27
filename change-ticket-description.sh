@@ -7,14 +7,17 @@ application=$3
 app_version=$4
 release_type=$5
 vault_description="$6"
-services=("$7")
-child_tickets=("$8")
-services=()
+services_string="$7"
+child_tickets_string="$8"
+
+# Convert the space-separated strings into arrays
+IFS=' ' read -r -a services <<< "$services_string"
+IFS=' ' read -r -a child_tickets <<< "$child_tickets_string"
+
 echo "Services:"
 for service in "${services[@]}"; do
      echo "$service"
 done
-echo "Ticket Description Changes: "
 for child_ticket in "${child_tickets[@]}"; do
      echo "$child_ticket"
 done
