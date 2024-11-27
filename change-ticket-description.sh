@@ -7,8 +7,11 @@ application=$3
 app_version=$4
 release_type=$5
 vault_description="$6"
-services="$7"
-child_tickets=("${@:8}")
+services=("$7")
+child_tickets=("$8")
+
+echo "Services: ${services[*]}"
+echo "Ticket Description Changes: ${child_tickets[*]}"
 
 parent_ticket="${child_tickets[0]}"
 

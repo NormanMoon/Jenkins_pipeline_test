@@ -58,7 +58,19 @@ pipeline {
                when { expression {!params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash change-ticket-description.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services} ${ticket_description_change}"
+                         def ticket_description_changes=params.TICKET_DESCRIPTION_CHANGE_LIST.split('\n')
+                         def list_services=params.SERVICES.split('\n')
+                         sh """
+                                     bash change-ticket-description.sh \
+                                         ${TOKEN} \
+                                         ${env} \
+                                         ${application} \
+                                         ${app_version} \
+                                         ${release_type} \
+                                         ${vault_ticket_description} \
+                                         '${list_services.join(' ')}' \
+                                         '${ticket_description_changes.join(' ')}'
+                                     """
                     }
                }
           }
