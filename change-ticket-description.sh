@@ -9,9 +9,15 @@ release_type=$5
 vault_description="$6"
 services=("$7")
 child_tickets=("$8")
-
-echo "Services: ${services[*]}"
-echo "Ticket Description Changes: ${child_tickets[*]}"
+services=()
+echo "Services:"
+for service in "${services[@]}"; do
+     echo "$service"
+done
+echo "Ticket Description Changes: "
+for child_ticket in "${child_tickets[@]}"; do
+     echo "$child_ticket"
+done
 
 parent_ticket="${child_tickets[0]}"
 
