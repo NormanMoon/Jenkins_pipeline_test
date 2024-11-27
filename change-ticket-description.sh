@@ -18,11 +18,6 @@ echo "Services:"
 for service in "${services[@]}"; do
      echo "$service"
 done
-for child_ticket in "${child_tickets[@]}"; do
-     echo "$child_ticket"
-done
-
-
 
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
      parent_ticket="${child_tickets[0]}"
@@ -30,6 +25,10 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
      # as a child ticket later on in the script
      child_tickets=( "${child_tickets[@]/${child_tickets[0]}}" )
 fi
+
+for child_ticket in "${child_tickets[@]}"; do
+     echo "$child_ticket"
+done
 
 #This will remove the ',' from the release_type and
 cleaned_release_type="${release_type//[\,]/}"
