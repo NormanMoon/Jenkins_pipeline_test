@@ -26,12 +26,12 @@ pipeline {
                when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash create-parent-ticket-test.sh ${TOKEN} ${application} ${env} ${services}"
+                         sh "bash create_parent_functional.sh ${TOKEN} ${application} ${env} \"${services}\""
                     }
                }
           }
           stage('Creating Child Ticket') {
-               when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
+               when { expression {params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
                          sh "bash create-child-ticket-test.sh ${TOKEN} ${env} ${application} ${services}"
@@ -39,7 +39,7 @@ pipeline {
                }
           }
           stage('Updating Tickets') {
-               when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
+               when { expression {params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
                          sh "bash description-updater-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
