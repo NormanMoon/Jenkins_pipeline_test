@@ -81,9 +81,9 @@ main() {
      cleaned_services=($(clean_all_services "${services[@]}"))
 
      # shellcheck disable=SC2207
-     issue_types_ids=($(return_list_of_issue_type_ids "${cleaned_services[@]}"))
+     issue_type_ids=($(return_list_of_issue_type_ids "${cleaned_services[@]}"))
 
-     for i in "${issue_types_ids[@]}"; do
+     for i in "${issue_type_ids[@]}"; do
           echo "issue_type_id: $i"
      done
 
