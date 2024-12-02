@@ -7,7 +7,7 @@ set -x
 
 source "${WORKSPACE}"/lib/utils.sh
 
-creat_json_string_for_bug() {
+create_json_string_for_bug() {
      local summary=$1
      local project_id=$2
      local issue_type_id=$3
@@ -36,7 +36,7 @@ creat_json_string_for_bug() {
           "$description"
 }
 
-creat_json_string_for_task() {
+create_json_string_for_task() {
      local summary=$1
      local project_id=$2
      local issue_type_id=$3
