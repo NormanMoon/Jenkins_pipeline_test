@@ -31,10 +31,10 @@ pipeline {
                }
           }
           stage('Creating Child Ticket') {
-               when { expression {params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
+               when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash create-child-ticket-test.sh ${TOKEN} ${env} ${application} ${services}"
+                         sh "bash create_child_ticket_functional.sh ${TOKEN} ${env} ${application} ${services}"
                     }
                }
           }

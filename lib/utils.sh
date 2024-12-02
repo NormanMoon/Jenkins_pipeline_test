@@ -1,4 +1,7 @@
 
+get_project_id() {
+     echo "10008"
+}
 
 # Writing a map function, that takes a function, and applies it to every element of an array
 map() {
@@ -43,4 +46,61 @@ create_jira_ticket() {
         "https://normanmoon.atlassian.net/rest/api/2/issue/" \
         -d "$json_string" \
         -o "$output_file"
+}
+
+modify_services_for_smartfhir_deployment() {
+     local services=("$@")
+     local modified_services=()
+
+     for service in "${services[@]}"; do
+          if [ "${service,,}" != "deployment" ]; then
+               modified_services+=("$service")
+          fi
+     done
+     modified_services+=("Main" "HFD")
+
+     echo "${modified_services[@]}"
+}
+
+task_or_bug() {
+     issue_type_id=$1
+     if ((issue_type_id==10008)); then
+          echo "Task"
+     elif ((issue_type_id==10011)); then
+          echo "Bug"
+     fi
+}
+
+issue_type_based_off_of_service() {
+     service=$1
+     if [[ "${service,,}" = "deployment" ]] || [[ "${service,,}" = "main" ]] || [[ "${service,,}" = "hfd" ]]; then
+          task_or_bug "10011"
+     else
+          task_or_bug "10008"
+     fi
+}
+
+get_all_issue_types() {
+     local services=("$@")
+     map issue_type_based_off_of_service "${services[@]}"
+}
+
+get_parent_ticket() {
+     environment=$1
+     application=$2
+     local parent_ticket
+     if [[ "${environment,,}" == "sqa" ]] || [[ "${environment,,}" == "sqa-beta" ]]; then
+          if [[ "${application,,}" == "smartfhir" ]]; then
+               parent_ticket="POP-5"
+          elif [[ "${application,,}" == "federator" ]]; then
+               parent_ticket="POP-4"
+          elif [[ "${application,,}" == "mirth" ]]; then
+               parent_ticket="POP-3"
+          elif [[ "${application,,}" == "governance-client" ]] || [[ "${application,,}" == "governance-service" ]]; then
+               parent_ticket="POP-6"
+          fi
+     else
+          parent_ticket=$(awk -F'"' '/"key":/ {print $8}' ../create-parent-ticket-test.out)
+     fi
+     echo "${parent_ticket}"
 }
