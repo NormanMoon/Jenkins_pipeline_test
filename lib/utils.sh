@@ -48,16 +48,21 @@ create_jira_ticket() {
         -o "$output_file"
 }
 
-modify_services_for_smartfhir_deployment() {
+if_smartfhir_then_modify_services_for_deployment_service() {
+     local application=$1
+     shift
      local services=("$@")
      local modified_services=()
-
-     for service in "${services[@]}"; do
-          if [ "${service,,}" != "deployment" ]; then
-               modified_services+=("$service")
-          fi
-     done
-     modified_services+=("Main" "HFD")
+     if [[ ${application,,} = "smartfhir" ]]; then
+           for service in "${services[@]}"; do
+                    if [ "${service,,}" != "deployment" ]; then
+                         modified_services+=("$service")
+                    fi
+               done
+          modified_services+=("Main" "HFD")
+     else
+          modified_services=("${services[@]}")
+     fi
 
      echo "${modified_services[@]}"
 }
