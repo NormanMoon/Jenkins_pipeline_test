@@ -71,6 +71,7 @@ main() {
      local application="$3"
      shift 3
      local services=("$@")
+     local summary="Child Ticket"
      local project_id
      project_id=$(get_project_id)
      local cleaned_services=()
