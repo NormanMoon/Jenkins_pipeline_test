@@ -44,7 +44,7 @@ main() {
      # Check environment and proceed if not in SQA or SQA-beta
      if [[ "${environment,,}" != "sqa" ]] && [[ "${environment,,}" != "sqa-beta" ]]; then
         local json_payload
-        json_payload=$(create_jira_payload "$summary" "$project_id" "$issue_type_id" "$description")
+        json_payload=$(create_json_string "$summary" "$project_id" "$issue_type_id" "$description")
         create_jira_ticket "$token" "$json_payload" "create-parent-ticket-test.out"
      fi
 
