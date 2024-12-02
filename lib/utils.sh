@@ -63,7 +63,7 @@ modify_services_for_smartfhir_deployment() {
 }
 
 task_or_bug() {
-     issue_type_id=$1
+     local issue_type_id=$1
      if ((issue_type_id==10008)); then
           echo "Task"
      elif ((issue_type_id==10011)); then
@@ -72,7 +72,7 @@ task_or_bug() {
 }
 
 issue_type_based_off_of_service() {
-     service=$1
+     local service=$1
      if [[ "${service,,}" = "deployment" ]] || [[ "${service,,}" = "main" ]] || [[ "${service,,}" = "hfd" ]]; then
           task_or_bug "10011"
      else
@@ -86,8 +86,8 @@ get_all_issue_types() {
 }
 
 get_parent_ticket() {
-     environment=$1
-     application=$2
+     local environment=$1
+     local application=$2
      local parent_ticket
      if [[ "${environment,,}" == "sqa" ]] || [[ "${environment,,}" == "sqa-beta" ]]; then
           if [[ "${application,,}" == "smartfhir" ]]; then

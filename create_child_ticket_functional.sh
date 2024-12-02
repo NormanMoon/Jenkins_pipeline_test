@@ -79,7 +79,7 @@ main() {
      parent_ticket=$(get_parent_ticket "$env" "$application")
 
      mapfile -t cleaned_services < <(clean_all_services "${services[@]}")
-     mapfile -t issue_type_ids < <(printf "%s\n" "${cleaned_services[@]}" | get_all_issue_types)
+     mapfile -t issue_type_ids < <(get_all_issue_types "${cleaned_services[@]}")
 
      for issue_type in "${issue_type_ids[@]}"; do
           local current_issue_type
