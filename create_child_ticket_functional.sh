@@ -77,12 +77,11 @@ main() {
      local issue_type_ids=()
      local parent_ticket
      parent_ticket=$(get_parent_ticket "$env" "$application")
+     # shellcheck disable=SC2207
      cleaned_services=($(clean_all_services "${services[@]}"))
 
-     for i in "${cleaned_services[@]}"; do
-          echo "${i}"
-     done
-
+     # shellcheck disable=SC2207
+     issue_type_ids=($(get_all_issue_types "${cleaned_services[@]}"))
 
      for issue_type in "${issue_type_ids[@]}"; do
           local current_issue_type
