@@ -30,6 +30,7 @@ clean_one_service() {
 # Uses the map function and the clean_one_service function to clean all services
 clean_all_services() {
      local application=$1
+     shift
      local services=("$@")
      # shellcheck disable=SC2207
      local clean_services=($(map clean_one_service "${services[@]}"))

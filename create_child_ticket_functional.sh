@@ -77,7 +77,7 @@ main() {
      project_id=$(get_project_id)
 
      # shellcheck disable=SC2207
-     local services=($(clean_all_services "${input_services[@]}"))
+     local services=($(clean_all_services "$application" "${input_services[@]}"))
 
      local issue_type_ids=()
      local parent_ticket
