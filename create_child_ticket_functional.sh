@@ -51,12 +51,12 @@ create_json_string_for_task() {
                     "id": "%s"
                },
                "issuetype": {
-                  "id": "%s"
+                    "id": "%s"
                },
                "parent": {
-                  "key": "%s"
+                    "key": "%s"
                },
-          "description": "%s"
+               "description": "%s"
           }
      }'   "$summary" \
           "$project_id" \
@@ -74,12 +74,11 @@ main() {
      local summary="Child Ticket"
      local project_id
      project_id=$(get_project_id)
-     local cleaned_services=()
+     # shellcheck disable=SC2207
+     local cleaned_services=($(clean_all_services "${services[@]}"))
      local issue_type_ids=()
      local parent_ticket
      parent_ticket=$(get_parent_ticket "$env" "$application")
-     # shellcheck disable=SC2207
-     cleaned_services=($(clean_all_services "${services[@]}"))
 
      # shellcheck disable=SC2207
      issue_type_ids=($(return_list_of_issue_type_ids "${cleaned_services[@]}"))
@@ -101,7 +100,7 @@ main() {
           create_jira_ticket "$token" "$json_payload" "create-child-ticket-test-subtask.out"
      done
 
-     cat create-child-ticket-subtask.out
+     cat create-child-ticket-test-subtask.out
 }
 
 main "$@"
