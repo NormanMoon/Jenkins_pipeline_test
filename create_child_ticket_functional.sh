@@ -79,6 +79,7 @@ main() {
      parent_ticket=$(get_parent_ticket "$env" "$application")
 
      mapfile -t cleaned_services < <(clean_all_services "${services[@]}")
+     echo "Services before issue type mapping: ${cleaned_services[*]}"
      mapfile -t issue_type_ids < <(get_all_issue_types "${cleaned_services[@]}")
 
      for issue_type in "${issue_type_ids[@]}"; do

@@ -73,6 +73,7 @@ task_or_bug() {
 
 issue_type_based_off_of_service() {
      local service=$1
+     echo "Determining issue type for service: $service" >&2  # Debug line
      if [[ "${service,,}" = "deployment" ]] || [[ "${service,,}" = "main" ]] || [[ "${service,,}" = "hfd" ]]; then
           task_or_bug "10011"
      else
