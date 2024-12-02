@@ -82,6 +82,9 @@ main() {
 
      # shellcheck disable=SC2207
      issue_type_ids=($(get_all_issue_types "${cleaned_services[@]}"))
+     for i in "${issue_type_ids[@]}"; do
+          echo "$i"
+     done
 
      for issue_type in "${issue_type_ids[@]}"; do
           local current_issue_type
