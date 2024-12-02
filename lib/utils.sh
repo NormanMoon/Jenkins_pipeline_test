@@ -83,7 +83,9 @@ issue_type_based_off_of_service() {
 
 get_all_issue_types() {
      local services=("$@")
-     map issue_type_based_off_of_service "${services[@]}"
+     local list_of_issue_types
+     list_of_issue_types=$(map issue_type_based_off_of_service "${services[@]}")
+     echo "${list_of_issue_types[@]}"
 }
 
 get_parent_ticket() {
