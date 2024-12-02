@@ -70,10 +70,13 @@ main() {
      local env="$2"
      local application="$3"
      shift 3
-     local services=("$@")
+     local input_services=("$@")
+     local services
+     services=$(if_smartfhir_then_modify_services_for_deployment_service "$application" "${input_services[@]}")
      local summary="Child Ticket"
      local project_id
      project_id=$(get_project_id)
+
      # shellcheck disable=SC2207
      local cleaned_services=($(clean_all_services "${services[@]}"))
      local issue_type_ids=()
