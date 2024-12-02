@@ -72,19 +72,19 @@ main() {
      shift 3
      local input_services=("$@")
      local services
-     services=$(if_smartfhir_then_modify_services_for_deployment_service "$application" "${input_services[@]}")
      local summary="Child Ticket"
      local project_id
      project_id=$(get_project_id)
 
      # shellcheck disable=SC2207
-     local cleaned_services=($(clean_all_services "${services[@]}"))
+     local cleaned_services=($(clean_all_services "${input_services[@]}"))
+     services=$(if_smartfhir_then_modify_services_for_deployment_service "$application" "${cleaned_services[@]}")
      local issue_type_ids=()
      local parent_ticket
      parent_ticket=$(get_parent_ticket "$env" "$application")
 
      # shellcheck disable=SC2207
-     issue_type_ids=($(return_list_of_issue_type_ids "${cleaned_services[@]}"))
+     issue_type_ids=($(return_list_of_issue_type_ids "${services[@]}"))
 
      for i in "${issue_type_ids[@]}"; do
           echo "issue_type_id: $i"
