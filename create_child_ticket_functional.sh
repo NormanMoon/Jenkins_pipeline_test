@@ -74,6 +74,7 @@ main() {
      local project_id
      project_id=$(get_project_id)
      local cleaned_services=()
+     local issue_types=()
      local issue_type_ids=()
      local parent_ticket
      parent_ticket=$(get_parent_ticket "$env" "$application")
@@ -81,10 +82,16 @@ main() {
      cleaned_services=($(clean_all_services "${services[@]}"))
 
      # shellcheck disable=SC2207
-     issue_type_ids=($(get_all_issue_types "${cleaned_services[@]}"))
-     for i in "${issue_type_ids[@]}"; do
-          echo "$i"
+     issue_types_ids=($(return_issue_type_ids_list_based_off_of_service "${cleaned_services[@]}"))
+     # shellcheck disable=SC2207
+     issue_types=($(map task_or_bug "${cleaned_services[@]}"))
+     for i in "${issue_types_ids[@]}"; do
+          echo "issue_type_id: $i"
      done
+     for i in "${issue_types[@]}"; do
+          echo "issue_type_name: $i"
+     done
+
 
      for issue_type in "${issue_type_ids[@]}"; do
           local current_issue_type
