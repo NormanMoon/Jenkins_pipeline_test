@@ -26,7 +26,7 @@ pipeline {
                when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash create_parent_functional.sh ${TOKEN} ${application} ${env} \"${services}\""
+                         sh "bash create_parent_functional.sh ${TOKEN} ${application} ${env}"
                     }
                }
           }
