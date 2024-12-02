@@ -100,7 +100,7 @@ get_parent_ticket() {
                parent_ticket="POP-6"
           fi
      else
-          parent_ticket=$(awk -F'"' '/"key":/ {print $8}' ../create-parent-ticket-test.out)
+          parent_ticket=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out)
      fi
      echo "${parent_ticket}"
 }
