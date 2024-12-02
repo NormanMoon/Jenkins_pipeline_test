@@ -31,7 +31,8 @@ clean_one_service() {
 clean_all_services() {
      local application=$1
      local services=("$@")
-     local clean_services=(map clean_one_service "${services[@]}")
+     # shellcheck disable=SC2207
+     local clean_services=($(map clean_one_service "${services[@]}"))
      if_smartfhir_then_modify_services_for_deployment_service "$application" "${clean_services[@]}"
 }
 
