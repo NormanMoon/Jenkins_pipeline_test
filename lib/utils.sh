@@ -29,3 +29,18 @@ clean_all_services() {
      local services=("$@")
      map clean_one_service "${services[@]}"
 }
+
+# Function to send the Jira ticket creation request
+create_jira_ticket() {
+    local token="$1"
+    local json_string="$2"
+    local output_file="$3"
+    curl -v -i -X POST \
+        -u "norman.moon@aboutobjects.com:$token" \
+        -H "Content-Type:application/json" \
+        -H "Accept: application/json" \
+        -H "X-Atlassian-Token:no-check" \
+        "https://normanmoon.atlassian.net/rest/api/2/issue/" \
+        -d "$json_string" \
+        -o "$output_file"
+}

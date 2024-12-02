@@ -8,8 +8,8 @@ set -x
 source "${WORKSPACE}"/lib/utils.sh
 
 
-# Function to create a Jira JSON payload
-create_jira_payload() {
+# Function to create the Jira JSON for a parent ticket
+create_json_string() {
     local summary="$1"
     local project_id="$2"
     local issue_type_id="$3"
@@ -31,21 +31,6 @@ create_jira_payload() {
      "$description"
 }
 
-# Function to send the Jira ticket creation request
-create_jira_ticket() {
-    local token="$1"
-    local json_payload="$2"
-    local output_file="$3"
-    curl -v -i -X POST \
-        -u "norman.moon@aboutobjects.com:$token" \
-        -H "Content-Type:application/json" \
-        -H "Accept: application/json" \
-        -H "X-Atlassian-Token:no-check" \
-        "https://normanmoon.atlassian.net/rest/api/2/issue/" \
-        -d "$json_payload" \
-        -o "$output_file"
-}
-
 # Main script logic
 main() {
      local token="$1"
@@ -56,7 +41,7 @@ main() {
      local summary="Parent"
      local description="Parent"
 
-     # Check environment and proceed if not in SQA or SQA-BETA
+     # Check environment and proceed if not in SQA or SQA-beta
      if [[ "${environment,,}" != "sqa" ]] && [[ "${environment,,}" != "sqa-beta" ]]; then
         local json_payload
         json_payload=$(create_jira_payload "$summary" "$project_id" "$issue_type_id" "$description")
