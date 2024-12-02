@@ -29,8 +29,10 @@ clean_one_service() {
 
 # Uses the map function and the clean_one_service function to clean all services
 clean_all_services() {
+     local application=$1
      local services=("$@")
-     map clean_one_service "${services[@]}"
+     local clean_services=(map clean_one_service "${services[@]}")
+     if_smartfhir_then_modify_services_for_deployment_service "$application" "${clean_services[@]}"
 }
 
 # Function to send the Jira ticket creation request
