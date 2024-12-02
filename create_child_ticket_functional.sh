@@ -74,7 +74,6 @@ main() {
      local project_id
      project_id=$(get_project_id)
      local cleaned_services=()
-     local issue_types=()
      local issue_type_ids=()
      local parent_ticket
      parent_ticket=$(get_parent_ticket "$env" "$application")
@@ -82,12 +81,11 @@ main() {
      cleaned_services=($(clean_all_services "${services[@]}"))
 
      # shellcheck disable=SC2207
-     issue_types_ids=($(return_issue_type_ids_list_based_off_of_service "${cleaned_services[@]}"))
+     issue_types_ids=($(return_list_of_issue_type_ids "${cleaned_services[@]}"))
 
      for i in "${issue_types_ids[@]}"; do
           echo "issue_type_id: $i"
      done
-
 
 
      for issue_type in "${issue_type_ids[@]}"; do
@@ -95,9 +93,9 @@ main() {
           current_issue_type=$(task_or_bug "$issue_type")
           local json_payload
           if [[ "${current_issue_type,,}" = "bug" ]]; then
-               json_payload=$(create_json_string_for_bug "$summary" "$project_id" "$issue_type" "$parent_ticket" "$issue_type")
+               json_payload=$(create_json_string_for_bug "$summary" "$project_id" "$issue_type" "$parent_ticket" "bug")
           elif [[ "${current_issue_type,,}" = "task" ]]; then
-               json_payload=$(create_json_string_for_task "$summary" "$project_id" "$issue_type" "$parent_ticket" "$issue_type")
+               json_payload=$(create_json_string_for_task "$summary" "$project_id" "$issue_type" "$parent_ticket" "task")
           fi
           create_jira_ticket "$token" "$json_payload" "create-child-ticket-test-subtask.out"
      done

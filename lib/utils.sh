@@ -71,21 +71,18 @@ task_or_bug() {
      fi
 }
 
-return_issue_type_ids_list_based_off_of_service() {
+return_issue_type_id_based_off_of_service() {
      local service=$1
-     local issue_type_ids=()
      if [[ "${service,,}" = "deployment" ]] || [[ "${service,,}" = "main" ]] || [[ "${service,,}" = "hfd" ]]; then
-          issue_type_ids+=("10011")
+          echo "10011"
      else
-          issue_type_ids+=("10008")
+          echo "10008"
      fi
-     echo "${issue_type_ids[@]}"
 }
 
-get_all_issue_types() {
+return_list_of_issue_type_ids() {
      local services=("$@")
-     map issue_type_based_off_of_service "${services[@]}"
-
+     map return_issue_type_id_based_off_of_service "${services[@]}"
 }
 
 get_parent_ticket() {
