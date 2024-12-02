@@ -77,9 +77,8 @@ main() {
      project_id=$(get_project_id)
 
      # shellcheck disable=SC2207
-     local cleaned_services=($(clean_all_services "${input_services[@]}"))
-     # shellcheck disable=SC2207
-     services=($(if_smartfhir_then_modify_services_for_deployment_service "$application" "${cleaned_services[@]}"))
+     local services=($(clean_all_services "${input_services[@]}"))
+
      local issue_type_ids=()
      local parent_ticket
      parent_ticket=$(get_parent_ticket "$env" "$application")
