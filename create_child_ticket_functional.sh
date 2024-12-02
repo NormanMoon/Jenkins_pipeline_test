@@ -77,10 +77,12 @@ main() {
      local issue_type_ids=()
      local parent_ticket
      parent_ticket=$(get_parent_ticket "$env" "$application")
+     cleaned_services=($(clean_all_services "${services[@]}"))
 
-     mapfile -t cleaned_services < <(clean_all_services "${services[@]}")
-     echo "Services before issue type mapping: ${cleaned_services[*]}"
-     mapfile -t issue_type_ids < <(get_all_issue_types "${cleaned_services[@]}")
+     for i in "${cleaned_services[@]}"; do
+          echo "${i}"
+     done
+
 
      for issue_type in "${issue_type_ids[@]}"; do
           local current_issue_type
