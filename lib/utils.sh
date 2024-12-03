@@ -3,6 +3,10 @@ get_project_id() {
      echo "10008"
 }
 
+get_project_prefix() {
+     echo "POP-"
+}
+
 # Writing a map function, that takes a function, and applies it to every element of an array
 map() {
      local func_to_apply=$1 # Passed in function argument
@@ -37,6 +41,11 @@ clean_all_services() {
      if_smartfhir_then_modify_services_for_deployment_service "$application" "${clean_services[@]}"
 }
 
+get_number_of_services() {
+     local services=("$@")
+     echo ${#services[@]}
+}
+
 # Function to send the Jira ticket creation request
 create_jira_ticket() {
     local token="$1"
@@ -50,6 +59,41 @@ create_jira_ticket() {
         "https://normanmoon.atlassian.net/rest/api/2/issue/" \
         -d "$json_string" \
         -o "$output_file"
+}
+
+edit_description_of_jira_ticket() {
+     local token="$1"
+     local json_string="$2"
+     local ticket="$3"
+     local output_file="$4"
+     curl -v -i -X POST \
+          -u "norman.moon@aboutobjects.com:$token" \
+          -H "Content-Type:application/json" \
+          -H "Accept: application/json" \
+          -H "X-Atlassian-Token:no-check" \
+          "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" \
+          -d "$json_string" \
+          -o "$output_file"
+}
+
+get_image() {
+     local application=$1
+     local image # This is the image that will be used in the ticket summary
+     if [ "${application,,}" = "federator" ]; then
+          image=" pghd-fhir-federator"
+     elif [ "${application,,}" = "smartfhir" ]; then
+          image="smart-pgd-fhir-service"
+     elif [ "${application,,}" = "mirth" ] && { [ "${env,,}" = "prod" ] || [ "${env,,}" = "sqa" ]; } then
+          image="tmc-v2"
+     elif [ "${application,,}" = "mirth" ] && { [ "${env,,}" = "prod-beta" ] || [ "${env,,}" = "sqa-beta" ]; } then
+          image="mirth-server"
+     elif [ "${application,,}" = "governance-client" ]; then
+          image="pghd-governance-mapping-tool"
+     elif [ "${application,,}" = "governance-service" ]; then
+          image=" pghd-governance-mapping-tool-service"
+     fi
+
+     echo "$image"
 }
 
 if_smartfhir_then_modify_services_for_deployment_service() {
@@ -113,3 +157,51 @@ get_parent_ticket() {
      fi
      echo "${parent_ticket}"
 }
+
+get_last_child_ticket_number() {
+     local last_child_ticket_number
+     last_child_ticket_number=$(awk -F'"' '/"key":/ {print $8}' create-child-ticket-test-subtask.out | sed 's/POP-//')
+     echo "$last_child_ticket_number"
+}
+
+return_child_ticket_list() {
+     local application=$1
+     shift
+     local input_services=("$@")
+     local services
+     services=$(clean_all_services "$application" "${input_services[@]}")
+     local child_tickets
+     local ticket_numbers
+     ticket_numbers=$(create_list_of_ticket_numbers "${services[@]}")
+     prefix=$(get_project_prefix)
+
+     child_tickets=$(map add_prefix_to_tickets "${ticket_numbers[@]}")
+
+     echo "${child_tickets[@]}"
+}
+
+create_list_of_ticket_numbers() {
+     services=("$@")
+     local last_child_ticket_num
+     local num_of_child_tickets
+     local child_ticket_numbers
+     last_child_ticket_num=$(get_last_child_ticket_number)
+     num_of_child_tickets=$(get_number_of_services "${services[@]}")
+     for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
+               child_ticket_numbers+=("$i")
+     done
+     echo "${child_ticket_numbers[@]}"
+}
+
+create_child_ticket_list() {
+     local last_child_ticket_num
+     local num_of_child_tickets
+}
+
+add_prefix_to_tickets() {
+     local ticket_number=$1
+     local prefix
+     prefix=$(get_project_prefix)
+     echo "${prefix}${ticket_number}"
+}
+
