@@ -172,7 +172,8 @@ return_child_ticket_list() {
      services=$(clean_all_services "$application" "${input_services[@]}")
      local child_tickets
      local ticket_numbers
-     ticket_numbers=$(create_list_of_ticket_numbers "${services[@]}")
+     # shellcheck disable=SC2207
+     ticket_numbers=($(create_list_of_ticket_numbers "${services[@]}"))
      prefix=$(get_project_prefix)
 
      child_tickets=$(map add_prefix_to_tickets "${ticket_numbers[@]}")
