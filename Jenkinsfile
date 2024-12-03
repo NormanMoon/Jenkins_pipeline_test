@@ -39,10 +39,10 @@ pipeline {
                }
           }
           stage('Updating Tickets') {
-               when { expression {params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
+               when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash description-updater-test.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
+                         sh "bash create_ticket_descriptions_functional.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
                     }
                }
           }
