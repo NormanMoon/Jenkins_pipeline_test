@@ -52,3 +52,5 @@ main() {
 
 
 }
+# Call main with all script arguments
+main "$@"
