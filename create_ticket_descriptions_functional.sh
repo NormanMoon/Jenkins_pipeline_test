@@ -31,6 +31,7 @@ main() {
      local services
      local project_id
      project_id=$(get_project_id)
+     # shellcheck disable=SC2207
      services=($(clean_all_services "$application" "${input_services[@]}"))
 
      local issue_type_ids=()
@@ -43,7 +44,9 @@ main() {
      image=$(get_image "$application")
 
      # shellcheck disable=SC2207
-     child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "$service" "($(return_child_ticket_list "$application" "${services[@]}"))"))
+     for i in "${services[@]}"; do
+          child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "$i" "($(return_child_ticket_list "$application" "${services[@]}"))"))
+     done
      for i in "${child_ticket_summary_list[@]}"; do
           echo "$i"
      done
