@@ -19,13 +19,13 @@ create_json_string() {
 
 main() {
      local token=$1
-     env=$2
-     application=$3
-     app_version=$4
-     release_type=$5
-     vault_description="$6"
+     local env=$2
+     local application=$3
+     local app_version=$4
+     local release_type=$5
+     local vault_description="$6"
      shift 6
-     input_services=("$@")
+     local input_services=("$@")
 
      local child_ticket_list
      local services
@@ -48,13 +48,10 @@ main() {
      # shellcheck disable=SC2207
      child_tickets=($(return_child_ticket_list "$application" "${services[@]}"))
 
+
      # shellcheck disable=SC2207
-     for i in "${services[@]}"; do
-          child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "$i" "${child_tickets[@]}"))
-     done
-     for i in "${child_ticket_summary_list[@]}"; do
-          echo "$i"
-     done
+     child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "${services[@]}"))
+
 
      echo "Services: ${services[*]}"
      echo "Child tickets: ${child_tickets[*]}"
