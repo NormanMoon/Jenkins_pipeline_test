@@ -43,15 +43,22 @@ main() {
      local image
      image=$(get_image "$application")
 
+
+     local child_tickets
+     # shellcheck disable=SC2207
+     child_tickets=($(return_child_ticket_list "$application" "${services[@]}"))
+
      # shellcheck disable=SC2207
      for i in "${services[@]}"; do
-          child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "$i" "($(return_child_ticket_list "$application" "${services[@]}"))"))
+          child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "$i" "${child_tickets[@]}"))
      done
      for i in "${child_ticket_summary_list[@]}"; do
           echo "$i"
      done
 
-
+     echo "Services: ${services[*]}"
+     echo "Child tickets: ${child_tickets[*]}"
+     echo "Ticket summaries: ${child_ticket_summary_list[*]}"
 
 }
 # Call main with all script arguments
