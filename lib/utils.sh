@@ -202,11 +202,11 @@ add_prefix_to_tickets() {
 }
 
 create_ticket_summary_text() {
-     local env
-     local image
-     local app_version
-     local application
-     local service
+     local env=$1
+     local image=$2
+     local app_version=$3
+     local application=$4
+     local service=$5
 
      echo "${env}: Deploy ${image}:$app_version for ${application} to ${service}"
 }
@@ -216,13 +216,22 @@ create_ticket_summary_list() {
      local image=$2
      local app_version=$3
      local application=$4
-     local service=$5
-     shift 5
-     local child_ticket_list=("$@")
+     shift 4
+     local services=("$@")
 
-     echo "Debug: env=$1, image=$2, app_version=$3, application=$4, service=$5, child_ticket_list=(${*:6})"
-     # shellcheck disable=SC2207
-     ticket_summaries=($(map "$(create_ticket_summary_text "$env" "$image" "$app_version" "$application" "$service")" "${child_ticket_list[@]}"))
-     echo "${ticket_summaries[@]}"
+
+     echo "Debug: env=$1, image=$2, app_version=$3, application=$4, services=${*:5}"
+     # Helper function to be used by map
+         generate_summary_for_service() {
+             local service=$1
+             create_ticket_summary_text "$env" "$image" "$app_version" "$application" "$service"
+         }
+
+    # Use the map function to apply `generate_summary_for_service` to all services
+    local ticket_summaries
+    ticket_summaries=$(map generate_summary_for_service "${services[@]}")
+
+    echo "Debug: Final ticket summaries=(${ticket_summaries})"
+    echo "$ticket_summaries"
 }
 
