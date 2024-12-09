@@ -43,12 +43,11 @@ main() {
      image=$(get_image "$application")
 
      # shellcheck disable=SC2207
-     child_ticket_list=($(return_child_ticket_list "$application" "${services[@]}"))
-     for i in "${child_ticket_list[@]}"; do
+     child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "$service" "($(return_child_ticket_list "$application" "${services[@]}"))"))
+     for i in "${child_ticket_summary_list[@]}"; do
           echo "$i"
-
      done
-     echo "$image"
+
 
 
 }

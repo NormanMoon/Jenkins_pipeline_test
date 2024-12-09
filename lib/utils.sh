@@ -194,15 +194,33 @@ create_list_of_ticket_numbers() {
      echo "${child_ticket_numbers[@]}"
 }
 
-create_child_ticket_list() {
-     local last_child_ticket_num
-     local num_of_child_tickets
-}
-
 add_prefix_to_tickets() {
      local ticket_number=$1
      local prefix
      prefix=$(get_project_prefix)
      echo "${prefix}${ticket_number}"
+}
+
+create_ticket_summary_text() {
+     local env
+     local image
+     local app_version
+     local application
+     local service
+
+     echo "${env}: Deploy ${image}:$app_version for ${application} to ${service}"
+}
+
+create_ticket_summary_list() {
+     local env=$1
+     local image=$2
+     local app_version=$3
+     local application=$4
+     local service=$5
+     shift 5
+     local child_ticket_list=("$@")
+     # shellcheck disable=SC2207
+     ticket_summaries=($(map "$(create_ticket_summary_text "$env" "$image" "$app_version" "$application" "$service")" "${child_ticket_list[@]}"))
+     echo "${ticket_summaries[@]}"
 }
 
