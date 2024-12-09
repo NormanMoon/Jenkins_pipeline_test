@@ -219,6 +219,8 @@ create_ticket_summary_list() {
      local service=$5
      shift 5
      local child_ticket_list=("$@")
+
+     echo "Debug: env=$1, image=$2, app_version=$3, application=$4, service=$5, child_ticket_list=(${*:6})"
      # shellcheck disable=SC2207
      ticket_summaries=($(map "$(create_ticket_summary_text "$env" "$image" "$app_version" "$application" "$service")" "${child_ticket_list[@]}"))
      echo "${ticket_summaries[@]}"
