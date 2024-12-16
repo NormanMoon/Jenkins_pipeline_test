@@ -201,7 +201,7 @@ add_prefix_to_tickets() {
      echo "${prefix}${ticket_number}"
 }
 
-create_ticket_summary_text() {
+create_child_ticket_summary_text() {
      local env=$1
      local image=$2
      local app_version=$3
@@ -209,6 +209,22 @@ create_ticket_summary_text() {
      local service=$5
 
      echo "${env}: Deploy ${image}:$app_version for ${application} to ${service}"
+
+     if [[ "${environment,,}" == "prod" ]] || [[ "${environment,,}" == "prod-beta" ]]; then
+          create_parent_ticket_summary "${env}" "${image}" "${app_version}" "${application}" "${service}"
+     else
+          echo "${env}: Deploy ${image}:$app_version for ${application} to ${service}"
+     fi
+}
+
+create_parent_ticket_summary() {
+     local env=$1
+     local image=$2
+     local app_version=$3
+     local application=$4
+     local service=$5
+
+     echo "${env}: Deploy ${image}:$app_version for ${application} to ${service} - Parent Ticket"
 }
 
 create_ticket_summary_list() {
@@ -224,7 +240,7 @@ create_ticket_summary_list() {
      # Helper function to be used by map
          generate_summary_for_service() {
              local service=$1
-             create_ticket_summary_text "$env" "$image" "$app_version" "$application" "$service"
+             create_child_ticket_summary_text "$env" "$image" "$app_version" "$application" "$service"
          }
 
     # Use the map function to apply `generate_summary_for_service` to all services
@@ -234,4 +250,6 @@ create_ticket_summary_list() {
     echo "Debug: Final ticket summaries=(${ticket_summaries})"
     echo "$ticket_summaries"
 }
+
+
 
