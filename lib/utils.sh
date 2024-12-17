@@ -210,7 +210,7 @@ create_child_ticket_summary_text() {
 
      echo "${env}: Deploy ${image}:$app_version for ${application} to ${service}"
 
-     if [[ "${environment,,}" == "prod" ]] || [[ "${environment,,}" == "prod-beta" ]]; then
+     if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
           create_parent_ticket_summary "${env}" "${image}" "${app_version}" "${application}" "${service}"
      else
           echo "${env}: Deploy ${image}:$app_version for ${application} to ${service}"
