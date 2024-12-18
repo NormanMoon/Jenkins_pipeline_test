@@ -47,7 +47,7 @@ main() {
 
      # Output for debugging
      echo "Child tickets: ${child_tickets[*]}"
-     echo "Descriptions: ${json_descriptions[*]}"
+     echo "Descriptions: ${descriptions[*]}"
 }
 # Call main with all script arguments
 main "$@"
