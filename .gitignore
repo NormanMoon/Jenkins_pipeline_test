@@ -9,4 +9,11 @@
 
 # Files
 **/*.out
+create-branch.sh
+create-pr-for-jira-ticket.sh
+grep_test.sh
+pr-prep-work.sh
+pre-pr-file-changing.sh
+slack-test.sh
+
 
