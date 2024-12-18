@@ -8,5 +8,5 @@
 /dataSources.local.xml
 
 # Files
-**.out
+**/*.out
 
