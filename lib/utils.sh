@@ -266,9 +266,9 @@ create_ticket_description() {
     local service=$5
 
     if [[ "$is_vault_ticket" == "true" ]]; then
-        echo "${vault_description} \n \n Deploy: ${image}:$app_version to ${service} \n \n *Sequence of Steps:*"
+        echo "${vault_description} \n \n Deploy: ${image}:$app_version to ${service} \n"
     else
-        echo "Deploy: ${image}:$app_version to ${service} \n \n *Sequence of Steps:*"
+        echo "Deploy: ${image}:$app_version to ${service} \n"
     fi
 }
 
