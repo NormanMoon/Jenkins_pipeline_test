@@ -272,6 +272,49 @@ create_ticket_description() {
     fi
 }
 
+generate_description() {
+    local index=$1
+    local child_tickets_count=$2
+    local vault_description=$3
+    local image=$4
+    local app_version=$5
+    local service=$6
+    local is_vault_ticket="false"
+
+    # Create the base description
+    local description
+    description=$(create_ticket_description "$is_vault_ticket" "$vault_description" "$image" "$app_version" "$service")
+
+    # Remove previous "next step" symbol if necessary
+    if ((index > 0)); then
+        description=$(remove_previous_next_step "$description")
+    fi
+
+    # Add "next step" symbol to the next description if it's not the last one
+    if ((index < child_tickets_count - 1)); then
+        description=$(add_next_step_to_description "$description")
+    fi
+
+    echo "$description"
+}
+
+generate_all_descriptions() {
+    local vault_description=$1
+    local image=$2
+    local app_version=$3
+    shift 3
+    local services=("$@")
+    local descriptions=()
+    local child_tickets_count=${#services[@]}
+
+    for ((i = 0; i < child_tickets_count; i++)); do
+        descriptions+=("$(generate_description "$i" "$child_tickets_count" "$vault_description" "$image" "$app_version" "${services[i]}")")
+    done
+
+    echo "${descriptions[@]}"
+}
+
+
 # Remove "next step" indicator from a description
 remove_previous_next_step() {
     local description=$1
@@ -287,8 +330,5 @@ add_next_step_to_description() {
     next_step_symbol=$(get_next_step_symbol)
     echo "${description} ${next_step_symbol}"
 }
-
-
-
 
 
