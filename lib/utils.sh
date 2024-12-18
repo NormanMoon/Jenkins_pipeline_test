@@ -273,62 +273,50 @@ create_ticket_description() {
 }
 
 generate_description() {
-    local index=$1
-    local child_tickets_count=$2
-    local vault_description=$3
-    local image=$4
-    local app_version=$5
-    local service=$6
-    local is_vault_ticket="false"
+     local vault_description=$1
+     local application=$2
+     local image
+     image=$(get_image "$application")
+     local app_version=$3
+     local service=$4
+     local is_vault_ticket="false"
 
-    # Create the base description
-    local description
-    description=$(create_ticket_description "$is_vault_ticket" "$vault_description" "$image" "$app_version" "$service")
-
-    # Remove previous "next step" symbol if necessary
-    if ((index > 0)); then
-        description=$(remove_previous_next_step "$description")
-    fi
-
-    # Add "next step" symbol to the next description if it's not the last one
-    if ((index < child_tickets_count - 1)); then
-        description=$(add_next_step_to_description "$description")
-    fi
-
-    echo "$description"
+     local description
+     description=$(create_ticket_description "$is_vault_ticket" "$vault_description" "$image" "$app_version" "$service")
+     echo "$description"
 }
 
-generate_all_descriptions() {
-    local vault_description=$1
-    local image=$2
-    local app_version=$3
-    shift 3
-    local services=("$@")
-    local descriptions=()
-    local child_tickets_count=${#services[@]}
+generate_all_descriptions_for_one_ticket() {
+     ticket_to_generate_descriptions_for=$1
+     local vault_description=$2
+     local application=$3
+     local image=$4
+     local app_version=$5
+     shift 3
+     local services=("$@")
+     local descriptions=()
+     # shellcheck disable=SC2207
+     local child_tickets=($(return_child_ticket_list "$application" "${services[@]}"))
 
-    for ((i = 0; i < child_tickets_count; i++)); do
-        descriptions+=("$(generate_description "$i" "$child_tickets_count" "$vault_description" "$image" "$app_version" "${services[i]}")")
-    done
+     for current_child_ticket in "${child_tickets[@]}"; do
+          curr_ticket_description=$(generate_description "$vault_description" "$image" "$app_version" "${services[i]}")
+          curr_ticket_description=$(add_next_step_string "$ticket_to_generate_descriptions_for" "$current_child_ticket" "$curr_ticket_description")
+          description+=("$curr_ticket_description")
+     done
 
-    echo "${descriptions[@]}"
+     echo "${descriptions[@]}"
 }
 
-
-# Remove "next step" indicator from a description
-remove_previous_next_step() {
-    local description=$1
-    local next_step_symbol
-    next_step_symbol=$(get_next_step_symbol)
-    echo "${description}" | sed "s/ ${next_step_symbol}//g"
-}
-
-# Add "next step" indicator to a description
-add_next_step_to_description() {
-    local description=$1
-    local next_step_symbol
-    next_step_symbol=$(get_next_step_symbol)
-    echo "${description} ${next_step_symbol}"
+add_next_step_string() {
+     local target_ticket=$1
+     local current_ticket=$2
+     local current_ticket_description=$3
+     local next_step
+     next_step=$(get_next_step_symbol)
+     if [[ "$target_ticket" == "$current_ticket" ]]; then
+          current_ticket_description+=" $next_step"
+     fi
+     echo "$current_ticket_description"
 }
 
 

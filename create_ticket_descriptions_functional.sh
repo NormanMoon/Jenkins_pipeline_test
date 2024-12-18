@@ -27,13 +27,12 @@ main() {
      shift 6
      local input_services=("$@")
 
-     local child_ticket_list
      local services
-     local project_id
-     project_id=$(get_project_id)
      # Clean services and retrieve necessary data
+     # shellcheck disable=SC2207
      local services=($(clean_all_services "$application" "${input_services[@]}"))
 
+     # shellcheck disable=SC2207
      local child_tickets=($(return_child_ticket_list "$application" "${services[@]}"))
 
 
@@ -48,6 +47,8 @@ main() {
      # Output for debugging
      echo "Child tickets: ${child_tickets[*]}"
      echo "Descriptions: ${descriptions[*]}"
+
+
 }
 # Call main with all script arguments
 main "$@"
