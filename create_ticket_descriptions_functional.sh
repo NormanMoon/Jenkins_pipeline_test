@@ -31,32 +31,44 @@ main() {
      local services
      local project_id
      project_id=$(get_project_id)
-     # shellcheck disable=SC2207
-     services=($(clean_all_services "$application" "${input_services[@]}"))
+     # Clean services and retrieve necessary data
+     local services=($(clean_all_services "$application" "${input_services[@]}"))
+     local image=$(get_image "$application")
+     local child_tickets=($(return_child_ticket_list "$application" "${services[@]}"))
+     local summaries=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "${services[@]}"))
 
-     local issue_type_ids=()
-     local parent_ticket
-     parent_ticket=$(get_parent_ticket "$env" "$application")
+     # Initialize description array
+     local descriptions=()
+     local next_step_symbol
+     next_step_symbol=$(get_next_step_symbol)
 
-     # shellcheck disable=SC2207
-     issue_type_ids=($(return_list_of_issue_type_ids "${services[@]}"))
-     local image
-     image=$(get_image "$application")
+     # Use map to create descriptions
+     for ((i=0; i<${#child_tickets[@]}; i++)); do
+       local is_vault_ticket=$(check_for_vault "${summaries[i]}")
 
+       # Create the new description
+       descriptions[i]=$(create_ticket_description "$is_vault_ticket" "$vault_description" "$image" "$app_version" "${services[i]}")
 
-     local child_tickets
-     # shellcheck disable=SC2207
-     child_tickets=($(return_child_ticket_list "$application" "${services[@]}"))
+       # Remove previous "next step" symbol if necessary
+       if ((i > 0)); then
+           descriptions[i]=$(remove_previous_next_step "${descriptions[i]}")
+       fi
 
+       # Add "next step" symbol to the next description
+       if ((i < ${#child_tickets[@]} - 1)); then
+           descriptions[i+1]=$(add_next_step_to_description "${descriptions[i+1]}")
+       fi
+     done
 
-     # shellcheck disable=SC2207
-     child_ticket_summary_list=($(create_ticket_summary_list "$env" "$image" "$app_version" "$application" "${services[@]}"))
+     # Escape newlines for JSON
+     local json_descriptions=()
+     for desc in "${descriptions[@]}"; do
+       json_descriptions+=("$(echo "$desc" | sed ':a;N;$!ba;s/\n/\\n/g')")
+     done
 
-
-     echo "Services: ${services[*]}"
+     # Output for debugging
      echo "Child tickets: ${child_tickets[*]}"
-     echo "Ticket summaries: ${child_ticket_summary_list[*]}"
-
+     echo "Descriptions: ${json_descriptions[*]}"
 }
 # Call main with all script arguments
 main "$@"

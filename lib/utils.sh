@@ -46,6 +46,8 @@ get_number_of_services() {
      echo ${#services[@]}
 }
 
+
+
 # Function to send the Jira ticket creation request
 create_jira_ticket() {
     local token="$1"
@@ -250,6 +252,43 @@ create_ticket_summary_list() {
     echo "Debug: Final ticket summaries=(${ticket_summaries})"
     echo "$ticket_summaries"
 }
+
+get_next_step_symbol() {
+     echo " *<---- This sub-task is for this step\* ⭐"
+}
+
+# Create a description for a ticket
+create_ticket_description() {
+    local is_vault_ticket=$1
+    local vault_description=$2
+    local image=$3
+    local app_version=$4
+    local service=$5
+
+    if [[ "$is_vault_ticket" == "true" ]]; then
+        echo "${vault_description} \n \n Deploy: ${image}:$app_version to ${service} \n \n *Sequence of Steps:*"
+    else
+        echo "Deploy: ${image}:$app_version to ${service} \n \n *Sequence of Steps:*"
+    fi
+}
+
+# Remove "next step" indicator from a description
+remove_previous_next_step() {
+    local description=$1
+    local next_step_symbol
+    next_step_symbol=$(get_next_step_symbol)
+    echo "${description}" | sed "s/ ${next_step_symbol}//g"
+}
+
+# Add "next step" indicator to a description
+add_next_step_to_description() {
+    local description=$1
+    local next_step_symbol
+    next_step_symbol=$(get_next_step_symbol)
+    echo "${description} ${next_step_symbol}"
+}
+
+
 
 
 
