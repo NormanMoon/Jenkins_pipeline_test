@@ -44,7 +44,7 @@ main() {
 
      # Use map to create descriptions
      for ((i=0; i<${#child_tickets[@]}; i++)); do
-       local is_vault_ticket=$(check_for_vault "${summaries[i]}")
+       local is_vault_ticket="false"
 
        # Create the new description
        descriptions[i]=$(create_ticket_description "$is_vault_ticket" "$vault_description" "$image" "$app_version" "${services[i]}")
