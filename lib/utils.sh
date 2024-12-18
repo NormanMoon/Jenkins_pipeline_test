@@ -287,23 +287,36 @@ generate_description() {
 }
 
 generate_all_descriptions_for_one_ticket() {
-     ticket_to_generate_descriptions_for=$1
+     local ticket_to_generate_descriptions_for=$1
      local vault_description=$2
      local application=$3
      local image=$4
      local app_version=$5
-     shift 3
+     shift 5
      local services=("$@")
-     local descriptions=()
-     # shellcheck disable=SC2207
      local child_tickets=($(return_child_ticket_list "$application" "${services[@]}"))
+     local descriptions=()
 
-     for current_child_ticket in "${child_tickets[@]}"; do
-          curr_ticket_description=$(generate_description "$vault_description" "$image" "$app_version" "${services[i]}")
-          curr_ticket_description=$(add_next_step_string "$ticket_to_generate_descriptions_for" "$current_child_ticket" "$curr_ticket_description")
-          description+=("$curr_ticket_description")
-     done
+     # Helper function to generate description for a single service and child ticket
+     generate_description_for_ticket() {
+          local index=$1
+          local child_ticket="${child_tickets[index]}"
+          local service="${services[index]}"
 
+          # Generate the description
+          local description
+          description=$(generate_description "$vault_description" "$application" "$image" "$app_version" "$service")
+
+          # Optionally append the "next step" string if this is the target ticket
+          description=$(add_next_step_string "$ticket_to_generate_descriptions_for" "$child_ticket" "$description")
+
+          echo "$description"
+     }
+
+     # Use map to generate descriptions
+     descriptions=($(map generate_description_for_ticket $(seq 0 $((${#child_tickets[@]} - 1)))))
+
+     # Return all descriptions as a space-separated string
      echo "${descriptions[@]}"
 }
 

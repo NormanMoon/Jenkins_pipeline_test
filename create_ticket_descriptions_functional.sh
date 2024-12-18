@@ -41,7 +41,8 @@ main() {
 
 
      # shellcheck disable=SC2207
-     descriptions=($(generate_all_descriptions "$vault_description" "$image" "$app_version" "${services[@]}"))
+
+     descriptions=($(generate_all_descriptions_for_one_ticket "$vault_description" "$image" "$app_version" "${services[@]}"))
 
 
      # Output for debugging
