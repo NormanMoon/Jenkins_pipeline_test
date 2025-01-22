@@ -145,7 +145,7 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
                  "https://normanmoon.atlassian.net/rest/api/2/issue/" \
                  -d \
                  "$json_final" \
-                 -o create-child-ticket-test-subtask.out
+                 -o create-child-tickets.out
 
      fi
 
