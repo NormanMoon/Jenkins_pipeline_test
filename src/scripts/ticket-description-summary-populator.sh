@@ -8,12 +8,12 @@ PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 #Parent ticket
 prefix="POP-"
 #Parent ticket
-parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket.out | sed 's/NGD-//')
+parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' src/scripts/create-parent-ticket.out | sed 's/NGD-//')
 # This takes the parent ticket number and adds the prefix to the beginning of it
 parent_ticket="NGD-${parent_ticket_num}"
 # This is the latest ticket number made from the children ticket. This is needed because later in the script we find the
 # the other children ticket numbers by subtracting from the latest child ticket number
-last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' src/scripts/create_child_tickets.out.out | sed 's/NGD-//')
+last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' src/scripts/create-child-tickets.out | sed 's/NGD-//')
 
 token=$1 # The environment taken from Jenkins Pipeline
 env=$2
