@@ -6,12 +6,13 @@ set -x
 prefix="POP-"
 #Parent ticket
 pwd
-parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket.out | sed 's/NGD-//')
+cd..
+parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket.out | sed 's/POP-//')
 # This takes the parent ticket number and adds the prefix to the beginning of it
-parent_ticket="NGD-${parent_ticket_num}"
+parent_ticket="${prefix}${parent_ticket_num}"
 # This is the latest ticket number made from the children ticket. This is needed because later in the script we find the
 # the other children ticket numbers by subtracting from the latest child ticket number
-last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-child-tickets.out | sed 's/NGD-//')
+last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-child-tickets.out | sed 's/POP-//')
 
 
 # Get the directory where the script is located
