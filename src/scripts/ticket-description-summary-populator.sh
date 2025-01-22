@@ -1,9 +1,6 @@
 #!/bin/bash
 set -x
 
-# Get the directory where the script is located
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
 #Parent ticket
 prefix="POP-"
@@ -15,6 +12,11 @@ parent_ticket="NGD-${parent_ticket_num}"
 # This is the latest ticket number made from the children ticket. This is needed because later in the script we find the
 # the other children ticket numbers by subtracting from the latest child ticket number
 last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-child-tickets.out | sed 's/NGD-//')
+
+
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
 token=$1 # The environment taken from Jenkins Pipeline
 env=$2
