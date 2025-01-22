@@ -59,7 +59,7 @@ if [[ "${environment,,}" != "sqa" ]] && [[ "${environment,,}" != "sqa-beta" ]]; 
                "https://normanmoon.atlassian.net/rest/api/2/issue/" \
                -d \
                "$json_final" \
-               -o create-parent-ticket-test.out
+               -o create-parent-ticket.out
 fi
 cat create-parent-ticket.out
 
