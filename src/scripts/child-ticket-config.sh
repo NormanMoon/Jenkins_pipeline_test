@@ -1,58 +1,52 @@
 #!/bin/bash
-set -x
+set -x #helpful for troubleshooting
 
-# Project ID
-project_id="10008"
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
+# This is the local Jira token, saved in the Jenkins pipeline
 token=$1
-env=$2
+environment=$2
 application=$3
 services=("${@:4}") # Get all arguments starting from the second one as an array
+
+cd "$PROJECT_ROOT" || exit
+# Compile and run Java program
+javac -d bin utils/service_cleaner.java
+OIFS="$IFS"
+cleaned_services_string=$(java -cp bin utils.service_cleaner "$application" "${services[@]}")
+# Convert the space-separated string back into an array
+IFS=' ' read -r -a services <<< "$cleaned_services_string"
+IFS="$OIFS"
+
+echo "These are the services: ${services[*]}"
+
+# 13403=configuration , and 12803=patch
 # Issue Type ID list (Patch, Configuration) (consul, staff, veteran,l=configuration, deployment=patch)
 issuetype_id=()
-cleaned_services=()
-# This loop will remove all the un wanted characters from the services array
-
-echo "services at top of script: ${services[*]}"
-for service in "${services[@]}"; do
-  cleaned_service="${service//[\[\],]/}"
-  cleaned_services+=("$cleaned_service")
-done
-echo "cleaned services at top of script: ${cleaned_services[*]}"
-# Overwrites the original service array with the cleaned version of service array
-if [ ${application,,} = "smartfhir" ]; then
-     for ((j=0; j<${#cleaned_services[@]}; j++)) do
-          if [[ "${cleaned_services[j],,}" = "deployment" ]]; then
-               unset 'cleaned_services[j]'
-          fi
-     done
-     # Reindex the array after unsetting
-     cleaned_services=("${cleaned_services[@]}")
-     cleaned_services+=("Main")
-     cleaned_services+=("HFD")
-fi
-
-
-services=("${cleaned_services[@]}")
-echo "services after cleaning: ${services[*]}"
-
 for ((j=0; j<${#services[@]}; j++)) do
      echo "Service Name : ${services[j],,}"
 
-     if [[ "${services[j],,}" = "deployment" ]] || [[ "${services[j],,}" = "main" ]] || [[ "${services[j],,}" = "hfd" ]] || [[ "${services[j],,}" = "arch" ]]; then
+     if [[ "${services[j],,}" = "deployment" ]] || [[ "${services[j],,}" = "main" ]] || [[ "${services[j],,}" = "hfd" ]] ; then
           issuetype_id+=("10011")
      else
           issuetype_id+=("10008")
      fi
 done
 
-#Parent ticket
-# This will awk the parent_ticket key from create-parent_ticket-ticket-test.out in the last line
-parent_ticket=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket-test.out)
-
 child_tickets=("Deployment...\n Sequence of Steps:\n\n")
 
-if [[ "${env,,}" == "sqa" ]] || [[ "${env,,}" == "sqa-beta" ]]; then
+#project_id=
+project_id="17306"
+
+#Parent ticket
+# This will awk the parent_ticket key from create-parent_ticket-ticket-test.out in the last line
+parent_ticket=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket.out)
+
+# If the environment is in staging, then we already know the parent_ticket so we can assign that automatically,
+# if its not in staging, then we made the parent ticket ourselves, and so we'll pull that from the .out file
+if [[ "${environment,,}" == "sqa" ]] || [[ "${environment,,}" == "sqa-beta" ]]; then
      if [[ "${application,,}" == "smartfhir" ]]; then
           parent_ticket="POP-5"
      elif [[ "${application,,}" == "federator" ]]; then
@@ -65,23 +59,18 @@ if [[ "${env,,}" == "sqa" ]] || [[ "${env,,}" == "sqa-beta" ]]; then
 fi
 
 
-for ((j=0; j<${#issuetype_id[@]}; j++)) do
-     child_tickets+=("Ticket")
-done
 
-description=("${child_tickets[0]}")
 
-for ((j=1; j<${#child_tickets[@]}; j++)) do
-    description+=("${child_tickets[j]}")
-done
+##################################################################################################################
+##################################################################################################################
 
 
 for ((j=0; j<${#issuetype_id[@]}; j++)) do
 
      if ((issuetype_id[j]==10008))  #Task
      then
-          summary=${child_tickets[j+1]}
-          temp_description=${description[*]}
+          summary="Ticket"
+          temp_description="Ticket"
           temp_issuetype=${issuetype_id[j]}
           template='{
 
@@ -121,8 +110,8 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
 
      elif ((issuetype_id[j]==10011))  #Bug
      then
-          summary=${child_tickets[j+1]}
-          temp_description=${description[*]}
+          summary="Ticket"
+          temp_description="Ticket"
           temp_issuetype=${issuetype_id[j]}
           template='{
 
@@ -162,6 +151,4 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
 
 done
 
-cat create-child-ticket-test-subtask.out
-
-
+cat create_child_tickets.out

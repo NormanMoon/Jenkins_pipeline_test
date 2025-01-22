@@ -26,7 +26,7 @@ pipeline {
                when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash create_parent_functional.sh ${TOKEN} ${application} ${env}"
+                         sh "bash src/scripts/parent-ticket-config.sh ${TOKEN} ${application} ${env}"
                     }
                }
           }
@@ -34,7 +34,7 @@ pipeline {
                when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash create_child_ticket_functional.sh ${TOKEN} ${env} ${application} ${services}"
+                         sh "bash src/scripts/child_ticket_config.sh ${TOKEN} ${env} ${application} ${services}"
                     }
                }
           }
@@ -42,35 +42,7 @@ pipeline {
                when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash create_ticket_descriptions_functional.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services}"
-                    }
-               }
-          }
-          stage('Rollback Tickets') {
-               when { expression {return params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
-               steps {
-                    script {
-                         sh "bash create-rollback-tickets.sh ${TOKEN} ${rollback_tickets}"
-                    }
-               }
-          }
-          stage('Changing Ticket Description') {
-               when { expression {!params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
-               steps {
-                    script{
-                         def ticket_description_changes=params.TICKET_DESCRIPTION_CHANGE_LIST.split('\n')
-                         def list_services=params.SERVICES.split('\n')
-                         sh """
-                                     bash change-ticket-description.sh \
-                                         ${TOKEN} \
-                                         ${env} \
-                                         ${application} \
-                                         ${app_version} \
-                                         ${release_type} \
-                                         ${vault_ticket_description} \
-                                         '${list_services.join(' ')}' \
-                                         '${ticket_description_changes.join(' ')}'
-                                     """
+                         sh "bash src/scripts/ticket-description-summary-populator.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services} "
                     }
                }
           }
