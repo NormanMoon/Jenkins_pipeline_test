@@ -34,7 +34,7 @@ pipeline {
                when { expression {!params.ROLLBACK && params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()} }
                steps {
                     script{
-                         sh "bash src/scripts/child_ticket_config.sh ${TOKEN} ${env} ${application} ${services}"
+                         sh "bash src/scripts/child-ticket-config.sh ${TOKEN} ${env} ${application} ${services}"
                     }
                }
           }
