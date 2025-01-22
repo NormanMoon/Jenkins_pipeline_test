@@ -151,4 +151,4 @@ for ((j=0; j<${#issuetype_id[@]}; j++)) do
 
 done
 
-cat create_child_tickets.out
+cat create-child-tickets.out
