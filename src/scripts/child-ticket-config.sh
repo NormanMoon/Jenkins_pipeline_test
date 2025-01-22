@@ -38,7 +38,7 @@ done
 child_tickets=("Deployment...\n Sequence of Steps:\n\n")
 
 #project_id=
-project_id="17306"
+project_id="10008"
 
 #Parent ticket
 # This will awk the parent_ticket key from create-parent_ticket-ticket-test.out in the last line
