@@ -114,11 +114,11 @@ public class description_creator {
         // Initialize parent ticket description
         StringBuilder parentDescription = new StringBuilder();
         parentDescription.append(summaries.get(0));
-        for (int i = 0; i < child_tickets.size(); i++) {
+        for (int i = 1; i < child_tickets.size(); i++) {
             parentDescription.append("\\n").
                     append(child_tickets.get(i)).
                     append(" ").
-                    append(summaries.get(i + 1));
+                    append(summaries.get(i));
         }
 
         descriptions.append(parentDescription.toString());
