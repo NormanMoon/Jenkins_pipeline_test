@@ -57,6 +57,14 @@ cleaned_services_string=$(java -cp bin utils.service_cleaner "$application" "${s
 IFS=' ' read -r -a services_cleaned <<< "$cleaned_services_string"
 IFS="$OIFS"
 
+
+javac -d bin utils/service_cleaner.java
+OIFS="$IFS"
+cleaned_tickets_string=$(java -cp bin utils.service_cleaner "${child_tickets_input[@]}")
+# Convert the space-separated string back into an array
+IFS=' ' read -r -a cleaned_tickets <<< "$cleaned_tickets_string"
+IFS="$OIFS"
+
 # Keywords to keep in services
 valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other")
 
@@ -68,7 +76,7 @@ for service in "${services_cleaned[@]}"; do
 done
 
 child_tickets=()
-for ticket in "${child_tickets_input[@]}"; do
+for ticket in "${cleaned_tickets[@]}"; do
     if [[ ! " ${services[*]} " == *" $ticket "* ]]; then
         child_tickets+=("$ticket")
     fi
