@@ -106,7 +106,22 @@ cleaned_services_string=$(java -cp bin utils.service_cleaner "$application" "${s
 OIFS="$IFS"
 IFS=' ' read -r -a services <<< "$cleaned_services_string"
 
-
+# Function to escape special characters for JSON
+escape_for_json() {
+  echo "$1" | sed \
+    -e 's/\\/\\\\/g' \      # Escape backslashes
+    -e 's/"/\\"/g' \        # Escape double quotes
+    -e "s/'/\\'/g" \        # Escape single quotes
+    -e 's/{/\\{/g' \        # Escape opening braces
+    -e 's/}/\\}/g' \        # Escape closing braces
+    -e 's/\[/\\[/g' \       # Escape opening brackets
+    -e 's/\]/\\]/g' \       # Escape closing brackets
+    -e 's/\t/\\t/g' \       # Escape tabs
+    -e 's/\n/\\n/g' \       # Escape newlines
+    -e 's/\r/\\r/g' \       # Escape carriage returns
+    -e 's/^ *//g' \         # Remove leading spaces
+    -e 's/ *$//g'           # Remove trailing spaces
+}
 
 other_ticket_summaries=""
 for (( i=0; i<${#child_tickets[@]}; i++ )); do
@@ -253,19 +268,4 @@ for currChildTicket in "${child_tickets[@]}"; do
      ((description_index+=1))
 done
 
-# Function to escape special characters for JSON
-escape_for_json() {
-  echo "$1" | sed \
-    -e 's/\\/\\\\/g' \      # Escape backslashes
-    -e 's/"/\\"/g' \        # Escape double quotes
-    -e "s/'/\\'/g" \        # Escape single quotes
-    -e 's/{/\\{/g' \        # Escape opening braces
-    -e 's/}/\\}/g' \        # Escape closing braces
-    -e 's/\[/\\[/g' \       # Escape opening brackets
-    -e 's/\]/\\]/g' \       # Escape closing brackets
-    -e 's/\t/\\t/g' \       # Escape tabs
-    -e 's/\n/\\n/g' \       # Escape newlines
-    -e 's/\r/\\r/g' \       # Escape carriage returns
-    -e 's/^ *//g' \         # Remove leading spaces
-    -e 's/ *$//g'           # Remove trailing spaces
-}
+
