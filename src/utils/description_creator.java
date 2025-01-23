@@ -115,7 +115,7 @@ public class description_creator {
         StringBuilder parentDescription = new StringBuilder();
         parentDescription.append(summaries.get(0));
         for (int i = 0; i < child_tickets.size(); i++) {
-            parentDescription.append("\n").
+            parentDescription.append("\\n").
                     append(child_tickets.get(i)).
                     append(" ").
                     append(summaries.get(i + 1));
@@ -131,9 +131,9 @@ public class description_creator {
                     image,
                     appVersion,
                     vaultDescription,
-                    services.get(i))).append("\n\n").append("*Sequence of Steps :*");
+                    services.get(i))).append("\\n\\n").append("*Sequence of Steps :*");
             for (int j = 0; j < child_tickets.size(); j++) {
-                current_child_description.append("\n").
+                current_child_description.append("\\n").
                         append(child_tickets.get(j)).
                         append(" ").
                         append(summaries.get(j + 1));
@@ -161,7 +161,7 @@ public class description_creator {
         String firstLineOfChild = "";
         if ("vault".equalsIgnoreCase(service)) {
             firstLineOfChild = String.format(
-                    "%s \n \n Deploy: %s:%s to %s",
+                    "%s \\n \\n Deploy: %s:%s to %s",
                     vaultDescription, image, appVersion, service
             );
         } else if ("main".equalsIgnoreCase(service) || "hfd".equalsIgnoreCase(service)) {

@@ -163,7 +163,7 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
                cut -d ':' -f2- | \
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
-          descriptions_array[i+1]="${ticket_description}$'\n \n'${descriptions_array[$i+1]}"
+          descriptions_array[i+1]="${ticket_description}'\n \n'${descriptions_array[$i+1]}"
      fi
 
 done
