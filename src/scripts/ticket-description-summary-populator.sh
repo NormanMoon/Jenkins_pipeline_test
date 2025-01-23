@@ -169,7 +169,7 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
 done
 
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
-     string_description="Test"
+     string_description=${descriptions_array[0]}
      parent_summary=${summaries[0]}
      template='{
          "fields" : {
@@ -181,7 +181,7 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
 
      json_final=$(printf "$template" \
           "$parent_summary" \
-          "$string_description")
+          "$string_description#" "}")
 
      curl -v -i -X PUT \
        -u norman.moon@aboutobjects.com:"$token" \
