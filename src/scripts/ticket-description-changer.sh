@@ -176,6 +176,7 @@ for service in "${services[@]}"; do
 
           descriptions_array[i]="${ticket_description}'\n \n'${descriptions_array[$child_ticket_index]}"
      fi
+     ((child_ticket_index+=1))
 done
 
 
