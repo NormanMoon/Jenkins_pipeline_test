@@ -220,9 +220,9 @@ cat update-task-test.out
 for currChildTicket in "${child_tickets[@]}"; do
      echo "Current child ticket being wrote to: ${currChildTicket}"
      string_description="${descriptions_array[$description_index]}"
-     string_description=$(echo "$string_description" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\n/\\n/g; s/'\''/\\'\''/g')
+     string_description="$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')"
      string_summary="${summaries[$description_index]}"
-     string_summary=$(echo "$string_summary" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\n/\\n/g; s/'\''/\\'\''/g')
+
      template='{
            "fields" : {
              "summary" : "%s",
