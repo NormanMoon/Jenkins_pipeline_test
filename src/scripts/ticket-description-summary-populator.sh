@@ -105,7 +105,7 @@ for (( i=0; i<${#child_tickets[@]}; i++ )); do
      if [ "${services[i]}" = "Other" ]; then
           ticket_summary=$(curl -s GET \
                -u norman.moon@aboutobjects.com:"$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"summary" :' | \
@@ -169,14 +169,14 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
 done
 
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
-     string_description=${descriptions_array[0]}
+     string_description="Test"
      parent_summary=${summaries[0]}
      template='{
          "fields" : {
-          "summary" : "%s",
-           "description" : "%s"
+               "summary" : "%s",
+               "description" : "%s"
          }
-       }'
+     }'
 
 
      json_final=$(printf "$template" \
@@ -184,7 +184,7 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
           "$string_description")
 
      curl -v -i -X PUT \
-       -u norman.moon@aboutobjects.com:$token \
+       -u norman.moon@aboutobjects.com:"$token" \
        -H "Content-Type:application/json" \
        -H "Accept: application/json" \
        -H "X-Atlassian-Token:no-check" \
