@@ -73,12 +73,6 @@ for service in "${services_cleaned[@]}"; do
     fi
 done
 
-child_tickets=()
-for ticket in "${child_tickets_input[@]}"; do
-    if [[ ! " ${services[*]} " == *" $ticket "* ]]; then
-        child_tickets+=("$ticket")
-    fi
-done
 
 echo "Filtered Services: ${services[*]}"
 echo "Filtered Child Tickets: ${child_tickets[*]}"
