@@ -6,7 +6,7 @@ set -x
 prefix="POP-"
 #Parent ticket
 pwd
-cd/src
+cd /src
 parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket.out | sed 's/POP-//')
 # This takes the parent ticket number and adds the prefix to the beginning of it
 parent_ticket="${prefix}${parent_ticket_num}"
