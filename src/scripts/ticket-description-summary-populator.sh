@@ -117,10 +117,6 @@ for (( i=0; i<${#child_tickets[@]}; i++ )); do
      fi
 done
 
-if [ -z "$other_ticket_summaries" ]; then
-    services+=("|")
-fi
-
 echo "${services[@]}"
 
 # Compile and run Java program
