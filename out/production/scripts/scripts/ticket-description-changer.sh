@@ -107,7 +107,6 @@ OIFS="$IFS"
 IFS=' ' read -r -a services <<< "$cleaned_services_string"
 
 
-
 other_ticket_summaries=""
 for (( i=0; i<${#child_tickets[@]}; i++ )); do
      if [ "${services[i]}" = "Other" ]; then
@@ -158,13 +157,15 @@ IFS='|'
 read -d '' -r -a descriptions_array <<< "$generated_descriptions"
 # Restore original IFS, important to clean up in case other parts use the OIFS
 IFS="$OIFS"
-
-
-for ((i = 1; i < ${#child_tickets[@]}; i++)); do
-     if [[ "${services[i]}" = "Other" ]]; then
+child_ticket_index=0
+if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     child_ticket_index=1
+fi
+for service in "${services[@]}"; do
+     if [[ "${service}" = "Other" ]]; then
           ticket_description=$(curl -s GET\
                -u "norman.moon@aboutobjects.com:$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[$child_ticket_index]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"description" :' | \
@@ -172,9 +173,11 @@ for ((i = 1; i < ${#child_tickets[@]}; i++)); do
                cut -d ':' -f2- | \
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
-          descriptions_array[i]="${ticket_description}'\n \n'${descriptions_array[$i]}"
+          descriptions_array[$child_ticket_index]="${ticket_description[*]} \n \n ${descriptions_array[$child_ticket_index]}"
      fi
+     ((child_ticket_index+=1))
 done
+
 
 
 
@@ -209,15 +212,15 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
        "$json_final" \
        -o update-task-test.out
 
-       (( description_index+=1 ))
+       ((description_index+=1))
 fi
 cat update-task-test.out
 
 for currChildTicket in "${child_tickets[@]}"; do
-
+     echo "Current child ticket being wrote to: ${currChildTicket}"
      string_description="${descriptions_array[$description_index]}"
-     string_description=$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')
-     string_summary="${summaries[$description_index]}"
+     string_description="$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')"
+     string_summary=$(echo "${summaries[$description_index]}" | sed 's/^ *//; s/ *$//')
 
      template='{
            "fields" : {
@@ -243,6 +246,8 @@ for currChildTicket in "${child_tickets[@]}"; do
                "$json_final" \
                -o update-task-test.out
 
-          cat update-task-test.out
-          (( description_index+=1 ))
+     cat update-task-test.out
+     ((description_index+=1))
 done
+
+

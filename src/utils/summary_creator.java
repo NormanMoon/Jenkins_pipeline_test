@@ -49,6 +49,7 @@ public class summary_creator {
         String[] parts = other_ticket_summaries.split("\\|");
         System.err.println("Parts array: " + Arrays.toString(parts));
         summary.append(parts[index]);
+        summary.append("|");
         return summary;
     }
 
