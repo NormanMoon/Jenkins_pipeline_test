@@ -176,10 +176,12 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
      fi
 done
 
-parent_ticket=${child_tickets[0]}
+
 
 description_index=0
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     parent_ticket=${child_tickets[0]}
+     child_tickets=("${child_tickets[@]:1}")
 
      string_description=${descriptions_array[description_index]}
      parent_summary=${summaries[description_index]}
@@ -206,64 +208,34 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
        -o update-task-test.out
 
        (( description_index+=1 ))
-
-       for currChildTicket in "${child_tickets[@]}"; do
-            template='{
-                  "fields" : {
-                    "summary" : "%s",
-                    "description" : "%s"
-                  }
-                }'
-
-                 json_final=$(printf "$template" \
-                      "${summaries[$description_index]}" \
-                      "${descriptions_array[$description_index]}")
-
-                 echo "${json_final}"
-
-
-                 curl -v -i -X PUT \
-                      -u norman.moon@aboutobjects.com:$token \
-                      -H "Content-Type:application/json" \
-                      -H "Accept: application/json" \
-                      -H "X-Atlassian-Token:no-check" \
-                      "https://normanmoon.atlassian.net/rest/api/2/issue/${currChildTicket}" \
-                      -d \
-                      "$json_final" \
-                      -o update-task-test.out
-
-                 cat update-task-test.out
-                 (( description_index+=1 ))
-       done
-else
-     for currChildTicket in "${child_tickets[@]}"; do
-          template='{
-                "fields" : {
-                  "summary" : "%s",
-                  "description" : "%s"
-                }
-              }'
-
-               json_final=$(printf "$template" \
-                    "${summaries[$description_index]}" \
-                    "${descriptions_array[$description_index]}")
-
-               echo "${json_final}"
-
-
-               curl -v -i -X PUT \
-                    -u norman.moon@aboutobjects.com:$token \
-                    -H "Content-Type:application/json" \
-                    -H "Accept: application/json" \
-                    -H "X-Atlassian-Token:no-check" \
-                    "https://normanmoon.atlassian.net/rest/api/2/issue/${currChildTicket}" \
-                    -d \
-                    "$json_final" \
-                    -o update-task-test.out
-
-               cat update-task-test.out
-               (( description_index+=1 ))
-     done
 fi
+cat update-task-test.out
+
+for currChildTicket in "${child_tickets[@]}"; do
+     template='{
+           "fields" : {
+             "summary" : "%s",
+             "description" : "%s"
+           }
+         }'
+
+          json_final=$(printf "$template" \
+               "${summaries[$description_index]}" \
+               "${descriptions_array[$description_index]}")
+
+          echo "${json_final}"
 
 
+          curl -v -i -X PUT \
+               -u norman.moon@aboutobjects.com:$token \
+               -H "Content-Type:application/json" \
+               -H "Accept: application/json" \
+               -H "X-Atlassian-Token:no-check" \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${currChildTicket}" \
+               -d \
+               "$json_final" \
+               -o update-task-test.out
+
+          cat update-task-test.out
+          (( description_index+=1 ))
+done

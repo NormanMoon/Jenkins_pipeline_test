@@ -176,8 +176,12 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
      fi
 done
 
+
+
 description_index=0
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     parent_ticket=${child_tickets[0]}
+     child_tickets=("${child_tickets[@]:1}")
 
      string_description=${descriptions_array[description_index]}
      parent_summary=${summaries[description_index]}
