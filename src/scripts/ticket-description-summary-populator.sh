@@ -30,6 +30,11 @@ vault_description="$6"
 services_input=("${@:7}")
 #Child Tickets
 num_of_child_tickets=${#services_input[@]}-1
+
+
+if [ $env == "Prod" ] || [ $env == "Prod-Beta" ]; then
+     child_tickets+=("$parent_ticket")
+fi
 for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
      child_tickets+=("${prefix}${i}")
 done
