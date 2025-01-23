@@ -181,7 +181,7 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
 
      json_final=$(printf "$template" \
           "$parent_summary" \
-          "$string_description#" "}")
+          "$string_description")
 
      curl -v -i -X PUT \
        -u norman.moon@aboutobjects.com:"$token" \
