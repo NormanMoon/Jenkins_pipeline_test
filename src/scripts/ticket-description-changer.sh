@@ -158,13 +158,15 @@ IFS='|'
 read -d '' -r -a descriptions_array <<< "$generated_descriptions"
 # Restore original IFS, important to clean up in case other parts use the OIFS
 IFS="$OIFS"
-
-
-for ((i = 1; i < ${#child_tickets[@]}; i++)); do
-     if [[ "${services[i]}" = "Other" ]]; then
+child_ticket_index=0
+if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     child_ticket_index=1
+fi
+for service in "${services[@]}"; do
+     if [[ "${service}" = "Other" ]]; then
           ticket_description=$(curl -s GET\
                -u "norman.moon@aboutobjects.com:$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[$child_ticket_index]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"description" :' | \
@@ -172,9 +174,10 @@ for ((i = 1; i < ${#child_tickets[@]}; i++)); do
                cut -d ':' -f2- | \
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
-          descriptions_array[i]="${ticket_description}'\n \n'${descriptions_array[$i]}"
+          descriptions_array[i]="${ticket_description}'\n \n'${descriptions_array[$child_ticket_index]}"
      fi
 done
+
 
 
 
