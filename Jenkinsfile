@@ -46,6 +46,12 @@ pipeline {
                     }
                }
           }
+          stage('Changing Ticket Order and Discription') {
+               when { expression {!params.TICKET_DESCRIPTION_CHANGE_LIST.isEmpty()}}
+                    steps {
+                          sh "bash src/scripts/ticket-description-summary-populator.sh ${TOKEN} ${env} ${application} ${app_version} ${release_type} ${vault_ticket_description} ${services} ${ticket_description_change}"
+                    }
+          }
      }
 }
 
