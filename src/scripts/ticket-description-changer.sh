@@ -238,7 +238,7 @@ for currChildTicket in "${child_tickets[@]}"; do
      echo "Current child ticket being wrote to: ${currChildTicket}"
      string_description="${descriptions_array[$description_index]}"
      string_description="$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')"
-     string_summary=$("${summaries[$description_index]}" | sed 's/^ *//; s/ *$//'))
+     string_summary=$("${summaries[$description_index]}" | sed 's/^ *//; s/ *$//')
 
      template='{
            "fields" : {
