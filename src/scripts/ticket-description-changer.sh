@@ -49,7 +49,7 @@ elif [ "${application,,}" = "governance-service" ]; then
 fi
 
 # Keywords to keep in services
-valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other" "Staff" "Consul")
+valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other")
 
 services=()
 for service in "${services_input[@]}"; do
