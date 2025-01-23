@@ -174,7 +174,7 @@ for service in "${services[@]}"; do
                cut -d ':' -f2- | \
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
-          descriptions_array[i]="${ticket_description}'\n \n'${descriptions_array[$child_ticket_index]}"
+          descriptions_array[$child_ticket_index]="${ticket_description}'\n \n'${descriptions_array[$child_ticket_index]}"
      fi
      ((child_ticket_index+=1))
 done
