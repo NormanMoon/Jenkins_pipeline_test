@@ -132,11 +132,11 @@ public class description_creator {
                     appVersion,
                     vaultDescription,
                     services.get(i))).append("\\n\\n").append("*Sequence of Steps :*");
-            for (int j = 0; j < child_tickets.size(); j++) {
+            for (int j = 1; j < child_tickets.size(); j++) {
                 current_child_description.append("\\n").
                         append(child_tickets.get(j)).
                         append(" ").
-                        append(summaries.get(j + 1));
+                        append(summaries.get(j));
                 if (i == j) {
                     current_child_description.append(nextStep);
                 }
