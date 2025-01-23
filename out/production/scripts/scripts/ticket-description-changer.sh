@@ -172,7 +172,7 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
                cut -d ':' -f2- | \
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
-          descriptions_array[i+1]="${ticket_description}$'\n \n'${descriptions_array[$i+1]}"
+          descriptions_array[i+1]="${ticket_description}'\n \n'${descriptions_array[$((i + 1))]}"
      fi
 done
 
@@ -184,6 +184,8 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
      child_tickets=("${child_tickets[@]:1}")
 
      string_description=${descriptions_array[description_index]}
+     # This escapes all the new line characters for json formatting
+     string_description=$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')
      parent_summary=${summaries[description_index]}
      template='{
          "fields" : {
@@ -212,6 +214,11 @@ fi
 cat update-task-test.out
 
 for currChildTicket in "${child_tickets[@]}"; do
+
+     string_description="${descriptions_array[$description_index]}"
+     string_description=$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')
+     string_summary="${summaries[$description_index]}"
+
      template='{
            "fields" : {
              "summary" : "%s",
@@ -220,8 +227,8 @@ for currChildTicket in "${child_tickets[@]}"; do
          }'
 
           json_final=$(printf "$template" \
-               "${summaries[$description_index]}" \
-               "${descriptions_array[$description_index]}")
+               "${string_summary}" \
+               "${string_description}")
 
           echo "${json_final}"
 
