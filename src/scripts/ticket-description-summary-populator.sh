@@ -63,7 +63,7 @@ elif [ "${application,,}" = "governance-service" ]; then
 fi
 
 # Keywords to keep in services
-valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other")
+valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other" "Consul" "Staff")
 
 # Now filtering services through valid services
 services=()
