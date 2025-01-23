@@ -35,6 +35,17 @@ for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i+
 done
 echo " These are the child tickets: ${child_tickets[*]}"
 
+# Cleaning services
+# Compile and run Java program
+javac -d bin utils/service_cleaner.java
+OIFS="$IFS"
+cleaned_services_string=$(java -cp bin utils.service_cleaner "$application" "${services_input[@]}")
+# Convert the space-separated string back into an array
+IFS=' ' read -r -a services_cleaned <<< "$cleaned_services_string"
+IFS="$OIFS"
+
+echo "These are the services: ${services[*]}"
+
 
 image="pghd-fhir-federator" # This is the image that will be used in the ticket summary
 if [ "${application,,}" = "federator" ]; then
@@ -54,8 +65,9 @@ fi
 # Keywords to keep in services
 valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other")
 
+# Now filtering services through valid services
 services=()
-for service in "${services_input[@]}"; do
+for service in "${services_cleaned[@]}"; do
     if [[ " ${valid_services[*]} " == *" $service "* ]]; then
         services+=("$service")
     fi
