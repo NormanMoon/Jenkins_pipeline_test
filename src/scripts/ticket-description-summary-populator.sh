@@ -32,7 +32,7 @@ vault_description="$6"
 # The services the tickets are being made for
 services_input=("${@:7}")
 #Child Tickets
-num_of_child_tickets=${#services[@]}-1
+num_of_child_tickets=${#services_input[@]}-1
 for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
      child_tickets+=("${prefix}${i}")
 done
