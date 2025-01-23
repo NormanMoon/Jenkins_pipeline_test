@@ -1,12 +1,13 @@
 #!/bin/bash
 set -x
 
-
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+cd "$PROJECT_ROOT" || exit
 #Parent ticket
 prefix="POP-"
 #Parent ticket
-pwd
-cd /src
 parent_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-parent-ticket.out | sed 's/POP-//')
 # This takes the parent ticket number and adds the prefix to the beginning of it
 parent_ticket="${prefix}${parent_ticket_num}"
@@ -14,10 +15,6 @@ parent_ticket="${prefix}${parent_ticket_num}"
 # the other children ticket numbers by subtracting from the latest child ticket number
 last_child_ticket_num=$(awk -F'"' '/"key":/ {print $8}' create-child-tickets.out | sed 's/POP-//')
 
-
-# Get the directory where the script is located
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
 token=$1 # The environment taken from Jenkins Pipeline
 env=$2
