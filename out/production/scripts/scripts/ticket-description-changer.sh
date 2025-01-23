@@ -160,7 +160,7 @@ read -d '' -r -a descriptions_array <<< "$generated_descriptions"
 IFS="$OIFS"
 
 
-for ((i = 0; i < ${#child_tickets[@]}; i++)); do
+for ((i = 1; i < ${#child_tickets[@]}; i++)); do
      if [[ "${services[i]}" = "Other" ]]; then
           ticket_description=$(curl -s GET\
                -u "norman.moon@aboutobjects.com:$token" \
@@ -172,7 +172,7 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
                cut -d ':' -f2- | \
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
-          descriptions_array[i+1]="${ticket_description}'\n \n'${descriptions_array[$((i + 1))]}"
+          descriptions_array[i]="${ticket_description}'\n \n'${descriptions_array[$i]}"
      fi
 done
 

@@ -209,12 +209,12 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
        "$json_final" \
        -o update-task-test.out
 
-       (( description_index+=1 ))
+       ((description_index+=1))
 fi
 cat update-task-test.out
 
 for currChildTicket in "${child_tickets[@]}"; do
-
+     echo "Current child ticket being wrote to: ${currChildTicket}"
      string_description="${descriptions_array[$description_index]}"
      string_description=$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')
      string_summary="${summaries[$description_index]}"
@@ -243,6 +243,6 @@ for currChildTicket in "${child_tickets[@]}"; do
                "$json_final" \
                -o update-task-test.out
 
-          cat update-task-test.out
-          (( description_index+=1 ))
+     cat update-task-test.out
+     ((description_index+=1))
 done
