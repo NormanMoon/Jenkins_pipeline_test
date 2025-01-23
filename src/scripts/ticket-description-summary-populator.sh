@@ -168,9 +168,11 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
 
 done
 
+description_index=0
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
-     string_description=${descriptions_array[0]}
-     parent_summary=${summaries[0]}
+
+     string_description=${descriptions_array[description_index]}
+     parent_summary=${summaries[description_index]}
      template='{
          "fields" : {
                "summary" : "%s",
@@ -192,11 +194,11 @@ if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
        -d \
        "$json_final" \
        -o update-task-test.out
+
+       (( description_index+=1 ))
 fi
 cat update-task-test.out
 
-
-i=0
 for currChildTicket in "${child_tickets[@]}"; do
      template='{
            "fields" : {
@@ -206,8 +208,8 @@ for currChildTicket in "${child_tickets[@]}"; do
          }'
 
           json_final=$(printf "$template" \
-               "${summaries[$i]}" \
-               "${descriptions_array[$i]}")
+               "${summaries[$description_index]}" \
+               "${descriptions_array[$description_index]}")
 
           echo "${json_final}"
 
@@ -223,6 +225,6 @@ for currChildTicket in "${child_tickets[@]}"; do
                -o update-task-test.out
 
           cat update-task-test.out
-          (( i+=1 ))
+          (( description_index+=1 ))
 done
 
