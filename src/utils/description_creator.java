@@ -114,17 +114,17 @@ public class description_creator {
         // Initialize parent ticket description
         StringBuilder parentDescription = new StringBuilder();
         parentDescription.append(summaries.get(0));
-        for (int i = 1; i < child_tickets.size(); i++) {
+        for (int i = 0; i < services.size(); i++) {
             parentDescription.append("\\n").
                     append(child_tickets.get(i)).
                     append(" ").
-                    append(summaries.get(i));
+                    append(summaries.get(i + 1));
         }
 
         descriptions.append(parentDescription.toString());
         descriptions.append("|");
 
-        for (int i = 0; i < child_tickets.size(); i++) {
+        for (int i = 0; i < services.size(); i++) {
             StringBuilder current_child_description = new StringBuilder();
             current_child_description.append(firstLineOfChild(environment,
                     application,
@@ -132,11 +132,11 @@ public class description_creator {
                     appVersion,
                     vaultDescription,
                     services.get(i))).append("\\n\\n").append("*Sequence of Steps :*");
-            for (int j = 1; j < child_tickets.size(); j++) {
+            for (int j = 0; j < services.size(); j++) {
                 current_child_description.append("\\n").
-                        append(child_tickets.get(j)).
+                        append(child_tickets.get(j + 1)).
                         append(" ").
-                        append(summaries.get(j));
+                        append(summaries.get(j + 1));
                 if (i == j) {
                     current_child_description.append(nextStep);
                 }
