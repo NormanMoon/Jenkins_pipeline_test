@@ -170,8 +170,12 @@ done
 
 description_index=0
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     parent_ticket=${child_tickets[0]}
+     child_tickets=("${child_tickets[@]:1}")
 
      string_description=${descriptions_array[description_index]}
+     # This escapes all the new line characters for json formatting
+     string_description=$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')
      parent_summary=${summaries[description_index]}
      template='{
          "fields" : {
@@ -224,7 +228,7 @@ for currChildTicket in "${child_tickets[@]}"; do
                "$json_final" \
                -o update-task-test.out
 
-          cat update-task-test.out
-          (( description_index+=1 ))
+     cat update-task-test.out
+     (( description_index+=1 ))
 done
 

@@ -79,18 +79,6 @@ public class summary_creator {
         return parentSummary;
     }
 
-    public static StringBuilder generateListOfSummaries(
-            String environment,
-            String application,
-            String image,
-            String appVersion,
-            List<String> services){
-        StringBuilder listOfSummaries = new StringBuilder();
-        for (String service : services) {
-            listOfSummaries.append(generateOneSummary(environment, application, image, appVersion, service));
-        }
-        return listOfSummaries;
-    }
 
     public static String generateTicketSummary(
             String environment,
