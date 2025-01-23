@@ -48,11 +48,20 @@ elif [ "${application,,}" = "governance-service" ]; then
      image="pghd-governance-mapping-tool-service"
 fi
 
+# Cleaning services
+# Compile and run Java program
+javac -d bin utils/service_cleaner.java
+OIFS="$IFS"
+cleaned_services_string=$(java -cp bin utils.service_cleaner "$application" "${services_input[@]}")
+# Convert the space-separated string back into an array
+IFS=' ' read -r -a services_cleaned <<< "$cleaned_services_string"
+IFS="$OIFS"
+
 # Keywords to keep in services
 valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other")
 
 services=()
-for service in "${services_input[@]}"; do
+for service in "${services_cleaned[@]}"; do
     if [[ " ${valid_services[*]} " == *" $service "* ]]; then
         services+=("$service")
     fi
