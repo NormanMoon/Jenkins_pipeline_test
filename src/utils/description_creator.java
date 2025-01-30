@@ -180,7 +180,7 @@ public class description_creator {
         else {
             firstLineOfChild = String.format(
                     " %s: Change %s:%s %s config for %s in %s",
-                    environment, image, service, appVersion, application, environment
+                    environment, image, appVersion, service, application, environment
             );
         }
         return firstLineOfChild;
