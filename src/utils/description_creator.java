@@ -116,7 +116,7 @@ public class description_creator {
         parentDescription.append(summaries.get(0));
         for (int i = 0; i < services.size(); i++) {
             parentDescription.append("\\n").
-                    append(child_tickets.get(i)).
+                    append(child_tickets.get(i + 1)).
                     append(" ").
                     append(summaries.get(i + 1));
         }

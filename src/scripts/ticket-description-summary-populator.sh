@@ -51,7 +51,6 @@ IFS="$OIFS"
 
 echo "These are the services: ${services[*]}"
 
-
 image="pghd-fhir-federator" # This is the image that will be used in the ticket summary
 if [ "${application,,}" = "federator" ]; then
      image="pghd-fhir-federator"
