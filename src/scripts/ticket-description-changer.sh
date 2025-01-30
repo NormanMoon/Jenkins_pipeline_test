@@ -66,7 +66,7 @@ IFS=' ' read -r -a cleaned_tickets <<< "$cleaned_tickets_string"
 IFS="$OIFS"
 
 # Keywords to keep in services
-valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other")
+valid_services=("Vault" "Deployment" "HFD" "Main" "Veteran" "Other" "Staff" "Consul")
 
 services=()
 for service in "${services_cleaned[@]}"; do
