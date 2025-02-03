@@ -117,8 +117,9 @@ for (( i=0; i<${#services[@]}; i++ )); do
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
           other_ticket_summaries+="| $(echo "${ticket_summary}" | sed "s/'//g" | tr -d '\n' | xargs)"
+          ((child_ticket_index+=1))
      fi
-     ((child_ticket_index+=1))
+
 done
 
 echo "${services[@]}"
