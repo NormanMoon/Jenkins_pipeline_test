@@ -154,7 +154,7 @@ child_ticket_index=0
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
      child_ticket_index=1
 fi
-
+echo ${child_ticket_index}
 for ((i = 0; i < ${#services[@]}; i++)); do
      if [[ "${services[i]}" = "Other" ]]; then
           ticket_description=$(curl -s GET\
