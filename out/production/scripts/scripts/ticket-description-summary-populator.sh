@@ -30,6 +30,11 @@ vault_description="$6"
 services_input=("${@:7}")
 #Child Tickets
 num_of_child_tickets=${#services_input[@]}-1
+
+
+if [ $env == "Prod" ] || [ $env == "Prod-Beta" ]; then
+     child_tickets+=("$parent_ticket")
+fi
 for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
      child_tickets+=("${prefix}${i}")
 done
@@ -45,7 +50,6 @@ IFS=' ' read -r -a services_cleaned <<< "$cleaned_services_string"
 IFS="$OIFS"
 
 echo "These are the services: ${services[*]}"
-
 
 image="pghd-fhir-federator" # This is the image that will be used in the ticket summary
 if [ "${application,,}" = "federator" ]; then
@@ -117,10 +121,6 @@ for (( i=0; i<${#child_tickets[@]}; i++ )); do
      fi
 done
 
-if [ -z "$other_ticket_summaries" ]; then
-    services+=("|")
-fi
-
 echo "${services[@]}"
 
 # Compile and run Java program
@@ -170,8 +170,12 @@ done
 
 description_index=0
 if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     parent_ticket=${child_tickets[0]}
+     child_tickets=("${child_tickets[@]:1}")
 
      string_description=${descriptions_array[description_index]}
+     # This escapes all the new line characters for json formatting
+     string_description=$(echo "$string_description" | sed ':a;N;$!ba;s/\n/\\n/g')
      parent_summary=${summaries[description_index]}
      template='{
          "fields" : {
@@ -224,7 +228,7 @@ for currChildTicket in "${child_tickets[@]}"; do
                "$json_final" \
                -o update-task-test.out
 
-          cat update-task-test.out
-          (( description_index+=1 ))
+     cat update-task-test.out
+     (( description_index+=1 ))
 done
 

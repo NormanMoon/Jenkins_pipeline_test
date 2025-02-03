@@ -28,17 +28,6 @@ release_type=$5
 vault_description="$6"
 # The services the tickets are being made for
 services_input=("${@:7}")
-#Child Tickets
-num_of_child_tickets=${#services_input[@]}-1
-
-
-if [ $env == "Prod" ] || [ $env == "Prod-Beta" ]; then
-     child_tickets+=("$parent_ticket")
-fi
-for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
-     child_tickets+=("${prefix}${i}")
-done
-echo " These are the child tickets: ${child_tickets[*]}"
 
 # Cleaning services
 # Compile and run Java program
@@ -48,8 +37,6 @@ cleaned_services_string=$(java -cp bin utils.service_cleaner "$application" "${s
 # Convert the space-separated string back into an array
 IFS=' ' read -r -a services_cleaned <<< "$cleaned_services_string"
 IFS="$OIFS"
-
-echo "These are the services: ${services[*]}"
 
 image="pghd-fhir-federator" # This is the image that will be used in the ticket summary
 if [ "${application,,}" = "federator" ]; then
@@ -76,6 +63,15 @@ for service in "${services_cleaned[@]}"; do
         services+=("$service")
     fi
 done
+
+num_of_child_tickets=${#services[@]}-1
+if [ $env == "Prod" ] || [ $env == "Prod-Beta" ]; then
+     child_tickets+=("$parent_ticket")
+fi
+for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
+     child_tickets+=("${prefix}${i}")
+done
+echo " These are the child tickets: ${child_tickets[*]}"
 
 
 echo "Filtered Services: ${services[*]}"
