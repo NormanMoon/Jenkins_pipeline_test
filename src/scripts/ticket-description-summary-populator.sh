@@ -99,13 +99,16 @@ OIFS="$IFS"
 IFS=' ' read -r -a services <<< "$cleaned_services_string"
 
 
-
+child_ticket_index=0
 other_ticket_summaries=""
-for (( i=0; i<${#child_tickets[@]}; i++ )); do
+if [ "${env,,}" = "prod" ] || [ "${env,,}" = "prod-beta" ]; then
+     child_ticket_index=1;
+fi
+for (( i=0; i<${#services[@]}; i++ )); do
      if [ "${services[i]}" = "Other" ]; then
           ticket_summary=$(curl -s GET \
                -u norman.moon@aboutobjects.com:"$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[child_ticket_index]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"summary" :' | \
@@ -115,6 +118,7 @@ for (( i=0; i<${#child_tickets[@]}; i++ )); do
 
           other_ticket_summaries+="| $(echo "${ticket_summary}" | sed "s/'//g" | tr -d '\n' | xargs)"
      fi
+     ((child_ticket_index+=1))
 done
 
 echo "${services[@]}"
@@ -146,12 +150,16 @@ read -d '' -r -a descriptions_array <<< "$generated_descriptions"
 # Restore original IFS, important to clean up in case other parts use the OIFS
 IFS="$OIFS"
 
+child_ticket_index=0
+if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     child_ticket_index=1
+fi
 
-for ((i = 0; i < ${#child_tickets[@]}; i++)); do
+for ((i = 0; i < ${#services[@]}; i++)); do
      if [[ "${services[i]}" = "Other" ]]; then
           ticket_description=$(curl -s GET\
                -u "norman.moon@aboutobjects.com:$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[child_ticket_index]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"description" :' | \
@@ -161,7 +169,7 @@ for ((i = 0; i < ${#child_tickets[@]}; i++)); do
 
           descriptions_array[i+1]="${ticket_description}'\n \n'${descriptions_array[$i+1]}"
      fi
-
+     ((child_ticket_index+=1))
 done
 
 description_index=0
