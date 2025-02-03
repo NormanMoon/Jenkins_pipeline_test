@@ -108,11 +108,15 @@ IFS=' ' read -r -a services <<< "$cleaned_services_string"
 
 
 other_ticket_summaries=""
+child_ticket_index=0
+if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
+     child_ticket_index=1
+fi
 for (( i=0; i<${#child_tickets[@]}; i++ )); do
      if [ "${services[i]}" = "Other" ]; then
           ticket_summary=$(curl -s GET \
                -u norman.moon@aboutobjects.com:"$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${ticket}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_ticket_index}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"summary" :' | \
@@ -122,6 +126,7 @@ for (( i=0; i<${#child_tickets[@]}; i++ )); do
 
           other_ticket_summaries+="| $(echo "${ticket_summary}" | sed "s/'//g" | tr -d '\n' | xargs)"
      fi
+     ((child_ticket_index+=1))
 done
 
 if [ -z "$other_ticket_summaries" ]; then
