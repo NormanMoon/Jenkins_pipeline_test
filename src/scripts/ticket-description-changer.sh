@@ -116,7 +116,7 @@ for (( i=0; i<${#child_tickets[@]}; i++ )); do
      if [ "${services[i]}" = "Other" ]; then
           ticket_summary=$(curl -s GET \
                -u norman.moon@aboutobjects.com:"$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_ticket_index}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[$child_ticket_index]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"summary" :' | \
