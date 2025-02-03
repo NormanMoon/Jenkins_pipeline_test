@@ -38,6 +38,8 @@ cleaned_services_string=$(java -cp bin utils.service_cleaner "$application" "${s
 IFS=' ' read -r -a services_cleaned <<< "$cleaned_services_string"
 IFS="$OIFS"
 
+
+
 image="pghd-fhir-federator" # This is the image that will be used in the ticket summary
 if [ "${application,,}" = "federator" ]; then
      image="pghd-fhir-federator"
@@ -65,7 +67,7 @@ for service in "${services_cleaned[@]}"; do
 done
 
 num_of_child_tickets=${#services[@]}-1
-if [ "${env,,}" = "prod" ] || [ "${env,,}" = "prod-beta" ]; then
+if [ $env == "Prod" ] || [ $env == "Prod-Beta" ]; then
      child_tickets+=("$parent_ticket")
 fi
 for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
@@ -99,17 +101,13 @@ OIFS="$IFS"
 IFS=' ' read -r -a services <<< "$cleaned_services_string"
 
 
-child_ticket_index=0
+
 other_ticket_summaries=""
-if [ "${env,,}" = "prod" ] || [ "${env,,}" = "prod-beta" ]; then
-     child_ticket_index=1;
-fi
-echo "child ticket index for Other summaries: ${child_ticket_index}"
-for (( i=0; i<${#services[@]}; i++ )); do
+for (( i=0; i<${#child_tickets[@]}; i++ )); do
      if [ "${services[i]}" = "Other" ]; then
           ticket_summary=$(curl -s GET \
                -u norman.moon@aboutobjects.com:"$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[child_ticket_index]}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"summary" :' | \
@@ -119,7 +117,6 @@ for (( i=0; i<${#services[@]}; i++ )); do
 
           other_ticket_summaries+="| $(echo "${ticket_summary}" | sed "s/'//g" | tr -d '\n' | xargs)"
      fi
-     ((child_ticket_index+=1))
 done
 
 echo "${services[@]}"
@@ -151,16 +148,12 @@ read -d '' -r -a descriptions_array <<< "$generated_descriptions"
 # Restore original IFS, important to clean up in case other parts use the OIFS
 IFS="$OIFS"
 
-child_ticket_index=0
-if [[ "${env,,}" == "prod" ]] || [[ "${env,,}" == "prod-beta" ]]; then
-     child_ticket_index=1
-fi
-echo ${child_ticket_index}
-for ((i = 0; i < ${#services[@]}; i++)); do
+
+for ((i = 0; i < ${#child_tickets[@]}; i++)); do
      if [[ "${services[i]}" = "Other" ]]; then
           ticket_description=$(curl -s GET\
                -u "norman.moon@aboutobjects.com:$token" \
-               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[child_ticket_index]}" | \
+               "https://normanmoon.atlassian.net/rest/api/2/issue/${child_tickets[i]}" | \
                json_pp | \
                grep '"fields" : {' -A 1000 | \
                grep '"description" :' | \
@@ -170,7 +163,7 @@ for ((i = 0; i < ${#services[@]}; i++)); do
 
           descriptions_array[i+1]="${ticket_description}'\n \n'${descriptions_array[$i+1]}"
      fi
-     ((child_ticket_index+=1))
+
 done
 
 description_index=0
