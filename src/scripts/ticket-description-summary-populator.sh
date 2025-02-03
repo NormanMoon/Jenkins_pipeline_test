@@ -65,7 +65,7 @@ for service in "${services_cleaned[@]}"; do
 done
 
 num_of_child_tickets=${#services[@]}-1
-if [ $env == "Prod" ] || [ $env == "Prod-Beta" ]; then
+if [ "${env,,}" = "prod" ] || [ "${env,,}" = "prod-beta" ]; then
      child_tickets+=("$parent_ticket")
 fi
 for ((i=last_child_ticket_num-num_of_child_tickets; i<=last_child_ticket_num; i++)); do
@@ -118,9 +118,8 @@ for (( i=0; i<${#services[@]}; i++ )); do
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
           other_ticket_summaries+="| $(echo "${ticket_summary}" | sed "s/'//g" | tr -d '\n' | xargs)"
-          ((child_ticket_index+=1))
      fi
-
+     ((child_ticket_index+=1))
 done
 
 echo "${services[@]}"
@@ -170,8 +169,8 @@ for ((i = 0; i < ${#services[@]}; i++)); do
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
           descriptions_array[i+1]="${ticket_description}'\n \n'${descriptions_array[$i+1]}"
-          ((child_ticket_index+=1))
      fi
+     ((child_ticket_index+=1))
 done
 
 description_index=0
