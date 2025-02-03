@@ -168,8 +168,8 @@ for ((i = 0; i < ${#services[@]}; i++)); do
                sed 's/^[ \t]*//;s/"//g;s/,$//')
 
           descriptions_array[i+1]="${ticket_description}'\n \n'${descriptions_array[$i+1]}"
+          ((child_ticket_index+=1))
      fi
-     ((child_ticket_index+=1))
 done
 
 description_index=0
