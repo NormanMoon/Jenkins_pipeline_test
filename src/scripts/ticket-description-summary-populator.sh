@@ -104,6 +104,7 @@ other_ticket_summaries=""
 if [ "${env,,}" = "prod" ] || [ "${env,,}" = "prod-beta" ]; then
      child_ticket_index=1;
 fi
+echo "child ticket index for Other summaries: ${child_ticket_index}"
 for (( i=0; i<${#services[@]}; i++ )); do
      if [ "${services[i]}" = "Other" ]; then
           ticket_summary=$(curl -s GET \
